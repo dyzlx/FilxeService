@@ -1,6 +1,7 @@
 package com.dyz.filxeservice.domain.repository;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,14 @@ public class LogicFileRepositoryTest {
 	public void addTest()
 	{
 		LogicFile lf = LogicFile.builder()
-				.isShared(false).name("test").partitionId(1).physicaFileId(1).createTime(new Date()).build();
+				.isShared(true).name("test_dyz").partitionId(2).physicaFileId(2).createTime(new Date()).build();
 		logicFileRepository.save(lf);
+	}
+	
+	@Test
+	public void queryTest()
+	{
+		List<LogicFile> lfList = logicFileRepository.queryLogicFiles(null, null, null, null);
+		System.out.println(lfList.size());
 	}
 }

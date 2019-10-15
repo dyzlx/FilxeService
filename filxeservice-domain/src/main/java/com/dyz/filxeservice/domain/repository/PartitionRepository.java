@@ -8,4 +8,5 @@ import com.dyz.filxeservice.domain.entity.Partition;
 @Repository
 public interface PartitionRepository extends JpaRepository<Partition, Integer>{
 
+	
 }

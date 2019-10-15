@@ -49,4 +49,7 @@ public class LogicFile {
     
 	@Column(name = "physica_file_id", nullable = false)
     private int physicaFileId;
+	
+	@Column(name = "user_id", nullable = false)
+	private int userId;
 }

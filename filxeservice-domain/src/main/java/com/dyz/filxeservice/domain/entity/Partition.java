@@ -43,4 +43,7 @@ public class Partition {
 	
 	@Column(name = "create_time", nullable = false)
 	private Date createTime;
+	
+	@Column(name = "user_id", nullable = false)
+	private int userId;
 }

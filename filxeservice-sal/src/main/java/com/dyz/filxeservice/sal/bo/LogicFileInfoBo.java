@@ -13,5 +13,7 @@ public class LogicFileInfoBo {
 	
 	private String ishared;
 	
-	private String partitionName;
+	private int partitionId;
+	
+	private int userId;
 }

@@ -21,7 +21,10 @@ public interface LogicFileRepository extends JpaRepository<LogicFile, Integer> {
 	@Query(value = "select * from logicfile where if(?1 is NULL,1=1,name like %?1%)"
 			+ " and if(?2 is NULL,1=1,partition_id=?2)"
 			+ " and if(?3 is NULL,1=1,is_shared=?3)"
-			+ " and if(?4 is NULL,1=1,user_id=?4)", 
+			+ " and if(?4 is NULL,1=1,user_id=?4)"
+			+ " and if(?5 is NULL,1=1,record_id=?5)", 
 			nativeQuery = true)
-	List<LogicFile> queryLogicFiles(String logicFileName, Integer partitionId, Boolean ishared, Integer userId);
+	List<LogicFile> queryLogicFiles(String logicFileName, Integer partitionId, Boolean ishared, Integer userId, Integer recordId);
+	
+	List<LogicFile> queryByName(String logicFileName);
 }

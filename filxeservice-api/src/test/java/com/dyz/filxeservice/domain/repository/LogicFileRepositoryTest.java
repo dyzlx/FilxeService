@@ -22,14 +22,15 @@ public class LogicFileRepositoryTest {
 	public void addTest()
 	{
 		LogicFile lf = LogicFile.builder()
-				.isShared(true).name("test_dyz").partitionId(2).physicaFileId(2).createTime(new Date()).build();
+				.isShared(true).name("test_dyz").partitionId(2).physicaFileId(2).createTime(new Date())
+				.userId(1).recordId(-1).build();
 		logicFileRepository.save(lf);
 	}
 	
 	@Test
 	public void queryTest()
 	{
-		List<LogicFile> lfList = logicFileRepository.queryLogicFiles(null, null, null, null);
+		List<LogicFile> lfList = logicFileRepository.queryLogicFiles(null, null, null, null, null);
 		System.out.println(lfList.size());
 	}
 }

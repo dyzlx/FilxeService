@@ -52,4 +52,7 @@ public class LogicFile {
 	
 	@Column(name = "user_id", nullable = false)
 	private int userId;
+	
+	@Column(name = "record_id")
+	private int recordId;
 }

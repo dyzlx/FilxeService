@@ -38,14 +38,14 @@ public class LogicFileServiceImpl implements LogicFileService {
 		{
 			throw new IllegalParamException("param is illegal");
 		}
-		List<LogicFile> entityList = logicFileRepository
-				.queryLogicFiles(queryBo.getLogicFileName(), queryBo.getPartitionId(), queryBo.getIshared(), queryBo.getUserId());
+		List<LogicFile> entityList = logicFileRepository.queryLogicFiles(
+				queryBo.getLogicFileName(), queryBo.getPartitionId(), queryBo.getIshared(), queryBo.getUserId(), queryBo.getRecordId());
 		return LogicFileModelTranslator.toBoList(entityList);
 	}
 
 	@Override
 	public void deleteLogicFile(@NotNull String fileName) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

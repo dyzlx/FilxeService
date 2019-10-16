@@ -28,6 +28,8 @@ public class LogicFileQueryBo {
 	
 	private Integer userId;
 	
+	private Integer recordId;
+	
 	public Date getFromTime()
 	{
 		if(Objects.isNull(fromTime))

@@ -28,7 +28,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 	
 	@Autowired
 	private PartitionRepository partitionRepository;
-	
+
 	@Autowired
 	private PhysicalFileRepository physicalFileRepository;
 

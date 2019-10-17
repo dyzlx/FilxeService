@@ -6,10 +6,12 @@ import lombok.Data;
 @Builder
 @Data
 public class LogicFileUpdateBo {
+	
+	private Integer logicFileId;
 
 	private String logicFileName;
 	
-	private String partitionName;
+	private Integer partitionId;
 	
-	private String ishared;
+	private boolean ishared;
 }

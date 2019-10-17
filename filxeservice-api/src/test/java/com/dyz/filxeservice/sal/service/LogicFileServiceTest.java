@@ -17,10 +17,9 @@ public class LogicFileServiceTest {
 
 	@Autowired
 	private LogicFileService logicFileService;
-	
+
 	@Test
-	public void queryLogicFileInfoTest()
-	{
+	public void queryLogicFileInfoTest() {
 		LogicFileQueryBo query = LogicFileQueryBo.builder().userId(1).build();
 		List<LogicFileInfoBo> result = logicFileService.queryLogicFileInfo(query);
 		System.out.println(result);

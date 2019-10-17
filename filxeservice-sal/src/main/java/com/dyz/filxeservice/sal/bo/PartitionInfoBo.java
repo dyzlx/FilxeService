@@ -8,6 +8,8 @@ import lombok.Data;
 @Builder
 @Data
 public class PartitionInfoBo {
+	
+	private int partitionId;
 
 	private String partitionName;
 	

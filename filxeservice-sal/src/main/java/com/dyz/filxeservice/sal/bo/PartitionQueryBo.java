@@ -11,6 +11,8 @@ public class PartitionQueryBo {
 	
 	private String partitionName;
 	
+	private int userId;
+	
 	private Date fromDate;
 	
 	private Date toDate;

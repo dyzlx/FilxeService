@@ -13,18 +13,20 @@ public interface LogicFileRepository extends JpaRepository<LogicFile, Integer> {
 
 	/**
 	 * query by logic file name (this can Fuzzy query), partition id and is-shared
+	 * 
 	 * @param logicFileName
 	 * @param partitionId
 	 * @param ishared
 	 * @return
 	 */
 	@Query(value = "select * from logicfile where if(?1 is NULL,1=1,name like %?1%)"
-			+ " and if(?2 is NULL,1=1,partition_id=?2)"
-			+ " and if(?3 is NULL,1=1,is_shared=?3)"
-			+ " and if(?4 is NULL,1=1,user_id=?4)"
-			+ " and if(?5 is NULL,1=1,record_id=?5)", 
-			nativeQuery = true)
-	List<LogicFile> queryLogicFiles(String logicFileName, Integer partitionId, Boolean ishared, Integer userId, Integer recordId);
+			+ " and if(?2 is NULL,1=1,partition_id=?2)" + " and if(?3 is NULL,1=1,is_shared=?3)"
+			+ " and if(?4 is NULL,1=1,user_id=?4)", nativeQuery = true)
+	List<LogicFile> queryLogicFiles(String logicFileName, Integer partitionId, Boolean ishared, Integer userId);
+
+	List<LogicFile> queryByPhysicaFileId(Integer id);
+
+	LogicFile queryByIdAndUserId(Integer id, Integer userId);
 	
-	List<LogicFile> queryByName(String logicFileName);
+	LogicFile queryById(Integer id);
 }

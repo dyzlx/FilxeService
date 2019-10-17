@@ -6,6 +6,8 @@ import lombok.Data;
 @Builder
 @Data
 public class LogicFileInfoBo {
+	
+	private int logicFileId;
 
 	private String logicFileName;
 	

@@ -16,13 +16,14 @@ public interface LogicFileService {
 	 * @return
 	 */
 	List<LogicFileInfoBo> queryLogicFileInfo(@NotNull LogicFileQueryBo queryBo);
-	
+
 	/**
 	 * 
-	 * @param fileName
+	 * @param logicFileId
+	 * @param userId
 	 */
-	void deleteLogicFile(@NotNull String fileName);
-	
+	void deleteLogicFile(@NotNull Integer logicFileId, @NotNull Integer userId);
+
 	/**
 	 * 
 	 * @param updateBo

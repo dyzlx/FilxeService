@@ -12,30 +12,23 @@ import com.dyz.filxeservice.domain.entity.LogicFile;
 import com.dyz.filxeservice.sal.bo.LogicFileInfoBo;
 
 public class LogicFileModelTranslator {
-	
-	public static LogicFileInfoBo toBo(LogicFile entity)
-	{
-		if(Objects.isNull(entity))
-		{
+
+	public static LogicFileInfoBo toBo(LogicFile entity) {
+		if (Objects.isNull(entity)) {
 			return null;
 		}
-		return LogicFileInfoBo.builder()
-				.logicFileName(entity.getName())
-				.partitionId(entity.getPartitionId())
+		return LogicFileInfoBo.builder().logicFileName(entity.getName()).partitionId(entity.getPartitionId())
 				.createTime(DateHandler.getDateString(entity.getCreateTime()))
-				.ishared(String.valueOf(entity.isShared()))
-				.userId(entity.getUserId())
+				.ishared(String.valueOf(entity.isShared())).userId(entity.getUserId()).logicFileId(entity.getId())
 				.build();
 	}
-	
-	public static List<LogicFileInfoBo> toBoList(List<LogicFile> entitys)
-	{
-		if(CollectionUtils.isEmpty(entitys))
-		{
+
+	public static List<LogicFileInfoBo> toBoList(List<LogicFile> entitys) {
+		if (CollectionUtils.isEmpty(entitys)) {
 			return Collections.emptyList();
 		}
 		List<LogicFileInfoBo> result = new ArrayList<>();
-		entitys.stream().forEach(x->{
+		entitys.stream().forEach(x -> {
 			result.add(toBo(x));
 		});
 		return result;

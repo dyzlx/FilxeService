@@ -47,7 +47,7 @@ public class PhysicalFile {
 	private String location;
 	
 	@Column(name = "size", nullable = false)
-	private int size;
+	private long size;
 	
 	@Column(name = "upload_time", nullable = false)
 	private Date uploadTime;

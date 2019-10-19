@@ -23,6 +23,7 @@ public class LogicFileRepositoryTest {
 		LogicFile lf = LogicFile.builder().isShared(true).name("test_dyz").partitionId(2).physicaFileId(2)
 				.createTime(new Date()).userId(1).build();
 		logicFileRepository.save(lf);
+		System.out.println(lf.getId());
 	}
 
 	@Test

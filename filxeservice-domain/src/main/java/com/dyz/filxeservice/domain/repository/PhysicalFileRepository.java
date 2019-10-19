@@ -8,4 +8,5 @@ import com.dyz.filxeservice.domain.entity.PhysicalFile;
 @Repository
 public interface PhysicalFileRepository extends JpaRepository<PhysicalFile, Integer> {
 
+	PhysicalFile queryById(Integer id);
 }

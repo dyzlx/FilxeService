@@ -9,4 +9,7 @@ import com.dyz.filxeservice.domain.entity.Partition;
 public interface PartitionRepository extends JpaRepository<Partition, Integer>{
 
 	Partition queryById(Integer id);
+	
+	Partition queryByIdAndUserId(Integer id, Integer userId);
+
 }

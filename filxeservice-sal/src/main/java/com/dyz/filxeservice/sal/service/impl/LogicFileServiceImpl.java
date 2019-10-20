@@ -1,9 +1,11 @@
 package com.dyz.filxeservice.sal.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -14,7 +16,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.dyz.filxeservice.common.execption.FileTransferException;
 import com.dyz.filxeservice.common.execption.IllegalParamException;
 import com.dyz.filxeservice.common.execption.NoDataException;
 import com.dyz.filxeservice.common.util.FileHandler;
@@ -51,7 +53,8 @@ public class LogicFileServiceImpl implements LogicFileService {
 			throw new IllegalParamException("param can not be null");
 		}
 		List<LogicFile> entityList = logicFileRepository.queryLogicFiles(queryBo.getLogicFileName(),
-				queryBo.getPartitionId(), queryBo.getIshared(), queryBo.getUserId());
+				queryBo.getPartitionId(), queryBo.getIshared(), queryBo.getUserId(), queryBo.getFromTime(),
+				queryBo.getToTime());
 		return LogicFileModelTranslator.toBoList(entityList);
 	}
 
@@ -101,17 +104,16 @@ public class LogicFileServiceImpl implements LogicFileService {
 			throw new IllegalParamException("param can not be null");
 		}
 		// TO-DO:same file not store this
-		File localFile = FileHandler.transferToLocalFile(file, LOCAL_STORE_PATH);
-		// TO-Do:change local file name by add UUID and rename localiIle
-		String localFileName = localFile.getName();
-		// TO-DO:caver xxx.xx.xx.xx type get last string split by "."
-		String localFileType = localFileName.split(".")[1];
+		String localFileName = UUID.randomUUID().toString() + file.getName();
+		File localFile = FileHandler.transferToLocalFile(file, LOCAL_STORE_PATH, localFileName);
+		String[] localFileNameStrs = localFileName.split(".");
+		String localFileType = localFileNameStrs[localFileNameStrs.length - 1];
 		PhysicalFile physicalFile = PhysicalFile.builder().location(LOCAL_STORE_PATH).name(localFileName)
 				.size(localFile.length()).type(localFileType).uploadTime(new Date()).build();
 		physicalFileRepository.save(physicalFile);
 		int physicalFileId = physicalFile.getId();
 		LogicFile newLogicFile = LogicFile.builder().createTime(new Date()).isShared(uploadBo.isIshared())
-				.name(localFile.getName()).partitionId(uploadBo.getPartitionId()).physicaFileId(physicalFileId)
+				.name(file.getName()).partitionId(uploadBo.getPartitionId()).physicaFileId(physicalFileId)
 				.userId(userId).build();
 		logicFileRepository.save(newLogicFile);
 	}
@@ -119,7 +121,26 @@ public class LogicFileServiceImpl implements LogicFileService {
 	@Override
 	public void downloadFile(@NotNull Integer logicFileId, @NotNull Integer userId,
 			@NotNull HttpServletResponse response) {
-		// TODO Auto-generated method stub
-
+		if (!ObjectUtils.allNotNull(logicFileId, userId, response)) {
+			throw new IllegalParamException("param can not be null");
+		}
+		LogicFile logicFile = logicFileRepository.queryByIdAndUserId(logicFileId, userId);
+		if (Objects.isNull(logicFile)) {
+			throw new NoDataException("no such logic file");
+		}
+		PhysicalFile physicalFile = physicalFileRepository.queryById(logicFile.getPhysicaFileId());
+		if (Objects.isNull(physicalFile)) {
+			throw new NoDataException("no such physical file");
+		}
+		String filePath = physicalFile.getLocation();
+		File downloadFile = new File(filePath, physicalFile.getName());
+		if (!downloadFile.exists()) {
+			throw new NoDataException("no such physical file");
+		}
+		try {
+			FileHandler.transferLocalFileToStream(downloadFile, response.getOutputStream());
+		} catch (IOException e) {
+			throw new FileTransferException("transfer file to stream fail!");
+		}
 	}
 }

@@ -28,7 +28,7 @@ public class LogicFileRepositoryTest {
 
 	@Test
 	public void queryTest() {
-		List<LogicFile> lfList = logicFileRepository.queryLogicFiles(null, null, null, null);
+		List<LogicFile> lfList = logicFileRepository.queryLogicFiles(null, null, null, null, null, null);
 		System.out.println(lfList.size());
 	}
 

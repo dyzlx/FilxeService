@@ -18,8 +18,8 @@ public class FileHandler {
 	 * 
 	 * @param file
 	 */
-	public static File transferToLocalFile(MultipartFile file, String localFilePath) {
-		File localFile = new File(localFilePath).getAbsoluteFile();
+	public static File transferToLocalFile(MultipartFile file, String localFilePath, String fileName) {
+		File localFile = new File(localFilePath, fileName).getAbsoluteFile();
 		try {
 			file.transferTo(localFile);
 		} catch (Exception e) {

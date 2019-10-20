@@ -17,21 +17,19 @@ import lombok.Data;
 public class LogicFileQueryBo {
 
 	private String logicFileName;
-	
+
 	private Boolean ishared;
-	
+
 	private Integer partitionId;
-	
+
 	private Date fromTime;
-	
+
 	private Date toTime;
-	
+
 	private Integer userId;
-	
-	public Date getFromTime()
-	{
-		if(Objects.isNull(fromTime))
-		{
+
+	public Date getFromTime() {
+		if (Objects.isNull(fromTime)) {
 			try {
 				return DateUtils.parseDate(ServiceConstant.DEFAULT_FROM_DATE, ServiceConstant.DATE_FORMAT);
 			} catch (ParseException e) {
@@ -40,11 +38,9 @@ public class LogicFileQueryBo {
 		}
 		return fromTime;
 	}
-	
-	public Date getToTime()
-	{
-		if(Objects.isNull(toTime))
-		{
+
+	public Date getToTime() {
+		if (Objects.isNull(toTime)) {
 			try {
 				return DateUtils.parseDate(ServiceConstant.DEFAULT_TO_DATE, ServiceConstant.DATE_FORMAT);
 			} catch (ParseException e) {

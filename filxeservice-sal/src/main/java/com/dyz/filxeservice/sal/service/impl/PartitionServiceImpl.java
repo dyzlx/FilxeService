@@ -81,5 +81,4 @@ public class PartitionServiceImpl implements PartitionService {
 		}
 		partitionRepository.delete(partition);
 	}
-
 }

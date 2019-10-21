@@ -50,7 +50,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 	@Override
 	public List<LogicFileInfoBo> queryLogicFileInfo(@NotNull LogicFileQueryBo queryBo) {
 		if (Objects.isNull(queryBo)) {
-			throw new IllegalParamException("param can not be null");
+			throw new IllegalParamException(0, "param can not be null");
 		}
 		List<LogicFile> entityList = logicFileRepository.queryLogicFiles(queryBo.getLogicFileName(),
 				queryBo.getPartitionId(), queryBo.getIshared(), queryBo.getUserId(), queryBo.getFromTime(),
@@ -61,11 +61,11 @@ public class LogicFileServiceImpl implements LogicFileService {
 	@Override
 	public void deleteLogicFile(@NotNull Integer logicFileId, @NotNull Integer userId) {
 		if (!ObjectUtils.allNotNull(logicFileId, userId)) {
-			throw new IllegalParamException("param can not be null");
+			throw new IllegalParamException(0, "param can not be null");
 		}
 		LogicFile logicFile = logicFileRepository.queryByIdAndUserId(logicFileId, userId);
 		if (Objects.isNull(logicFile)) {
-			throw new NoDataException("no such logic file");
+			throw new NoDataException(0, "no such logic file");
 		}
 		int physicalFileId = logicFile.getPhysicaFileId();
 		logicFileRepository.delete(logicFile);
@@ -73,7 +73,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 		if (CollectionUtils.isEmpty(others)) {
 			PhysicalFile physicalFile = physicalFileRepository.queryById(physicalFileId);
 			if (Objects.isNull(physicalFile)) {
-				throw new NoDataException("no such physical file");
+				throw new NoDataException(0, "no such physical file");
 			}
 			File file = new File(physicalFile.getLocation());
 			if (file.exists() && FileUtils.deleteQuietly(file)) {
@@ -85,12 +85,12 @@ public class LogicFileServiceImpl implements LogicFileService {
 	@Override
 	public void updateLogicFileInfo(@NotNull LogicFileUpdateBo updateBo, @NotNull Integer userId) {
 		if (Objects.isNull(updateBo)) {
-			throw new IllegalParamException("param can not be null");
+			throw new IllegalParamException(0, "param can not be null");
 		}
 		LogicFile updatedLogicFile = logicFileRepository.queryByIdAndUserId(updateBo.getLogicFileId(), userId);
 		Partition partotion = partitionRepository.queryByIdAndUserId(updateBo.getPartitionId(), userId);
 		if (!ObjectUtils.allNotNull(updatedLogicFile, partotion)) {
-			throw new NoDataException("no such logic file or partition");
+			throw new NoDataException(0, "no such logic file or partition");
 		}
 		updatedLogicFile.setName(updateBo.getLogicFileName());
 		updatedLogicFile.setPartitionId(partotion.getId());
@@ -101,7 +101,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 	@Override
 	public void uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId) {
 		if (!ObjectUtils.allNotNull(file, uploadBo, userId)) {
-			throw new IllegalParamException("param can not be null");
+			throw new IllegalParamException(0, "param can not be null");
 		}
 		// TO-DO:same file not store this
 		String localFileName = UUID.randomUUID().toString() + file.getName();
@@ -122,25 +122,25 @@ public class LogicFileServiceImpl implements LogicFileService {
 	public void downloadFile(@NotNull Integer logicFileId, @NotNull Integer userId,
 			@NotNull HttpServletResponse response) {
 		if (!ObjectUtils.allNotNull(logicFileId, userId, response)) {
-			throw new IllegalParamException("param can not be null");
+			throw new IllegalParamException(0, "param can not be null");
 		}
 		LogicFile logicFile = logicFileRepository.queryByIdAndUserId(logicFileId, userId);
 		if (Objects.isNull(logicFile)) {
-			throw new NoDataException("no such logic file");
+			throw new NoDataException(0, "no such logic file");
 		}
 		PhysicalFile physicalFile = physicalFileRepository.queryById(logicFile.getPhysicaFileId());
 		if (Objects.isNull(physicalFile)) {
-			throw new NoDataException("no such physical file");
+			throw new NoDataException(0, "no such physical file");
 		}
 		String filePath = physicalFile.getLocation();
 		File downloadFile = new File(filePath, physicalFile.getName());
 		if (!downloadFile.exists()) {
-			throw new NoDataException("no such physical file");
+			throw new NoDataException(0, "no such physical file");
 		}
 		try {
 			FileHandler.transferLocalFileToStream(downloadFile, response.getOutputStream());
 		} catch (IOException e) {
-			throw new FileTransferException("transfer file to stream fail!");
+			throw new FileTransferException(0, "transfer file to stream fail!");
 		}
 	}
 }

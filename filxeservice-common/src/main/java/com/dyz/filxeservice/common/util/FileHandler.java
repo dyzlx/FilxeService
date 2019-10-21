@@ -23,7 +23,7 @@ public class FileHandler {
 		try {
 			file.transferTo(localFile);
 		} catch (Exception e) {
-			throw new FileTransferException("file transfer error");
+			throw new FileTransferException(0, "file transfer error");
 		}
 		return localFile;
 	}
@@ -36,7 +36,7 @@ public class FileHandler {
 	 */
 	public static String transferLocalFileToStream(File file, OutputStream os) {
 		if (!file.exists()) {
-			throw new NoDataException("file is not exist!");
+			throw new NoDataException(0, "file is not exist!");
 		}
 		byte[] buffer = new byte[1024];
 		FileInputStream fis = null;
@@ -50,7 +50,7 @@ public class FileHandler {
 				i = bis.read(buffer);
 			}
 		} catch (Exception e) {
-			throw new FileTransferException("transfer file to stream fail!");
+			throw new FileTransferException(0, "transfer file to stream fail!");
 		} finally {
 			if (bis != null) {
 				try {

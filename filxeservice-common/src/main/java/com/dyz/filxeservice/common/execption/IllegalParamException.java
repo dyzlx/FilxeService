@@ -1,20 +1,22 @@
 package com.dyz.filxeservice.common.execption;
 
 @SuppressWarnings("serial")
-public class IllegalParamException extends RuntimeException {
+public class IllegalParamException extends BusinessException {
 
-	public IllegalParamException()
-	{
+	public IllegalParamException() {
 		super();
 	}
-	
-	public IllegalParamException(String message)
-	{
+
+	public IllegalParamException(String message) {
 		super(message);
 	}
-	
-	public IllegalParamException(String message, Throwable cause)
-	{
+
+	public IllegalParamException(int code, String message) {
+		super(message);
+		this.code = code;
+	}
+
+	public IllegalParamException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

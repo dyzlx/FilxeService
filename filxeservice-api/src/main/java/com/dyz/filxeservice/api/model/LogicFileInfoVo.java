@@ -1,19 +1,17 @@
-package com.dyz.filxeservice.sal.bo;
-
-import java.util.Date;
+package com.dyz.filxeservice.api.model;
 
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
 @Data
-public class LogicFileInfoBo {
+@Builder
+public class LogicFileInfoVo {
 	
 	private int logicFileId;
 
 	private String logicFileName;
 	
-	private Date createTime;
+	private String createTime;
 	
 	private boolean ishared;
 	

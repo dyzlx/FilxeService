@@ -1,20 +1,22 @@
 package com.dyz.filxeservice.common.execption;
 
 @SuppressWarnings("serial")
-public class FileTransferException extends RuntimeException {
+public class FileTransferException extends BusinessException {
 
-	public FileTransferException()
-	{
+	public FileTransferException() {
 		super();
 	}
-	
-	public FileTransferException(String message)
-	{
+
+	public FileTransferException(String message) {
 		super(message);
 	}
-	
-	public FileTransferException(String message, Throwable cause)
-	{
+
+	public FileTransferException(int code, String message) {
+		super(message);
+		this.code = code;
+	}
+
+	public FileTransferException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

@@ -31,7 +31,7 @@ public class LogicFileQueryBo {
 	public Date getFromTime() {
 		if (Objects.isNull(fromTime)) {
 			try {
-				return DateUtils.parseDate(ServiceConstant.DEFAULT_FROM_DATE, ServiceConstant.DATE_FORMAT);
+				return DateUtils.parseDate(ServiceConstant.DEFAULT_FROM_DATE, ServiceConstant.DATE_FORMAT_SHORT);
 			} catch (ParseException e) {
 				throw new IllegalParamException("Illega param fromTime");
 			}
@@ -42,9 +42,9 @@ public class LogicFileQueryBo {
 	public Date getToTime() {
 		if (Objects.isNull(toTime)) {
 			try {
-				return DateUtils.parseDate(ServiceConstant.DEFAULT_TO_DATE, ServiceConstant.DATE_FORMAT);
+				return DateUtils.parseDate(ServiceConstant.DEFAULT_TO_DATE, ServiceConstant.DATE_FORMAT_SHORT);
 			} catch (ParseException e) {
-				throw new IllegalParamException("Illega param fromTime");
+				throw new IllegalParamException("Illega param toTime");
 			}
 		}
 		return toTime;

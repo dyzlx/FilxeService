@@ -27,7 +27,7 @@ public class PartitionQueryBo {
 	public Date getFromDate() {
 		if (Objects.isNull(fromDate)) {
 			try {
-				return DateUtils.parseDate(ServiceConstant.DEFAULT_FROM_DATE, ServiceConstant.DATE_FORMAT);
+				return DateUtils.parseDate(ServiceConstant.DEFAULT_FROM_DATE, ServiceConstant.DATE_FORMAT_SHORT);
 			} catch (ParseException e) {
 				throw new IllegalParamException("Illega param fromTime");
 			}
@@ -38,9 +38,9 @@ public class PartitionQueryBo {
 	public Date getToDate() {
 		if (Objects.isNull(toDate)) {
 			try {
-				return DateUtils.parseDate(ServiceConstant.DEFAULT_TO_DATE, ServiceConstant.DATE_FORMAT);
+				return DateUtils.parseDate(ServiceConstant.DEFAULT_TO_DATE, ServiceConstant.DATE_FORMAT_SHORT);
 			} catch (ParseException e) {
-				throw new IllegalParamException("Illega param fromTime");
+				throw new IllegalParamException("Illega param toTime");
 			}
 		}
 		return toDate;

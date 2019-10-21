@@ -1,20 +1,22 @@
 package com.dyz.filxeservice.common.execption;
 
 @SuppressWarnings("serial")
-public class NoDataException extends RuntimeException {
-	
-	public NoDataException()
-	{
+public class NoDataException extends BusinessException {
+
+	public NoDataException() {
 		super();
 	}
-	
-	public NoDataException(String message)
-	{
+
+	public NoDataException(String message) {
 		super(message);
 	}
-	
-	public NoDataException(String message, Throwable cause)
-	{
+
+	public NoDataException(int code, String message) {
+		super(message);
+		this.code = code;
+	}
+
+	public NoDataException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

@@ -1,20 +1,22 @@
 package com.dyz.filxeservice.common.execption;
 
 @SuppressWarnings("serial")
-public class NoAuthorizeException extends RuntimeException{
+public class NoAuthorizeException extends BusinessException {
 
-	public NoAuthorizeException()
-	{
+	public NoAuthorizeException() {
 		super();
 	}
-	
-	public NoAuthorizeException(String message)
-	{
+
+	public NoAuthorizeException(String message) {
 		super(message);
 	}
-	
-	public NoAuthorizeException(String message, Throwable cause)
-	{
+
+	public NoAuthorizeException(int code, String message) {
+		super(message);
+		this.code = code;
+	}
+
+	public NoAuthorizeException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

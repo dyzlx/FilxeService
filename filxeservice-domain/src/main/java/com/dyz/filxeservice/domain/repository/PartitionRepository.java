@@ -20,5 +20,7 @@ public interface PartitionRepository extends JpaRepository<Partition, Integer>{
 	Partition queryById(Integer id);
 	
 	Partition queryByIdAndUserId(Integer id, Integer userId);
+	
+	List<Partition> queryByIsDefaultAndUserId(boolean isDefault, Integer userId);
 
 }

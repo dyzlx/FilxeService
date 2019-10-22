@@ -16,6 +16,8 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.dyz.filxeservice.common.constant.ServiceConstant;
 import com.dyz.filxeservice.common.execption.FileTransferException;
 import com.dyz.filxeservice.common.execption.IllegalParamException;
 import com.dyz.filxeservice.common.execption.NoDataException;
@@ -75,7 +77,8 @@ public class LogicFileServiceImpl implements LogicFileService {
 			if (Objects.isNull(physicalFile)) {
 				throw new NoDataException(0, "no such physical file");
 			}
-			File file = new File(physicalFile.getLocation());
+			File file = new File(physicalFile.getLocation(), physicalFile.getName());
+			System.out.println();
 			if (file.exists() && FileUtils.deleteQuietly(file)) {
 				physicalFileRepository.delete(physicalFile);
 			}
@@ -104,17 +107,28 @@ public class LogicFileServiceImpl implements LogicFileService {
 			throw new IllegalParamException(0, "param can not be null");
 		}
 		// TO-DO:same file not store this
-		String localFileName = UUID.randomUUID().toString() + file.getName();
+		String originFileName = file.getOriginalFilename();
+		String localFileName = UUID.randomUUID().toString() + originFileName;
 		File localFile = FileHandler.transferToLocalFile(file, LOCAL_STORE_PATH, localFileName);
-		String[] localFileNameStrs = localFileName.split(".");
+		String[] localFileNameStrs = localFileName.split(ServiceConstant.STRING_SPLITE_POINT);
 		String localFileType = localFileNameStrs[localFileNameStrs.length - 1];
 		PhysicalFile physicalFile = PhysicalFile.builder().location(LOCAL_STORE_PATH).name(localFileName)
 				.size(localFile.length()).type(localFileType).uploadTime(new Date()).build();
 		physicalFileRepository.save(physicalFile);
-		int physicalFileId = physicalFile.getId();
+		Integer physicalFileId = physicalFile.getId();
+		Integer partitionId = uploadBo.getPartitionId();
+		if (Objects.isNull(partitionId)) {
+			List<Partition> defaultPartitions = partitionRepository.queryByIsDefaultAndUserId(true, userId);
+			if (CollectionUtils.isEmpty(defaultPartitions)) {
+				Partition defaultPartition = Partition.builder().createTime(new Date())
+						.isDefault(true).name("Default").userId(userId).build();
+				partitionRepository.save(defaultPartition);
+				defaultPartitions.add(defaultPartition);
+			}
+			partitionId = defaultPartitions.get(0).getId();
+		}
 		LogicFile newLogicFile = LogicFile.builder().createTime(new Date()).isShared(uploadBo.isIshared())
-				.name(file.getName()).partitionId(uploadBo.getPartitionId()).physicaFileId(physicalFileId)
-				.userId(userId).build();
+				.name(originFileName).partitionId(partitionId).physicaFileId(physicalFileId).userId(userId).build();
 		logicFileRepository.save(newLogicFile);
 	}
 

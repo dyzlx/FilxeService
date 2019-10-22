@@ -17,7 +17,8 @@ public class PartitionModelTranslator {
 			return null;
 		}
 		return PartitionInfoBo.builder().createTime(entity.getCreateTime()).description(entity.getDescription())
-				.partitionId(entity.getId()).partitionName(entity.getName()).userId(entity.getUserId()).build();
+				.partitionId(entity.getId()).partitionName(entity.getName()).userId(entity.getUserId())
+				.isDefault(entity.isDefault()).build();
 	}
 
 	public static List<PartitionInfoBo> toBoList(List<Partition> entitys) {

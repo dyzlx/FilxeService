@@ -18,4 +18,6 @@ public class PartitionInfoBo {
 	private Date createTime;
 	
 	private int userId;
+	
+	private boolean isDefault;
 }

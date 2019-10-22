@@ -9,7 +9,6 @@ public class LogicFileUploadBo {
 	
 	private boolean ishared;
 	
-	@Builder.Default
-	private Integer partitionId = -1;
+	private Integer partitionId;
 
 }

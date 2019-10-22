@@ -17,6 +17,7 @@ import com.dyz.filxeservice.common.util.DateHandler;
 import com.dyz.filxeservice.sal.bo.LogicFileInfoBo;
 import com.dyz.filxeservice.sal.bo.LogicFileQueryBo;
 import com.dyz.filxeservice.sal.bo.LogicFileUpdateBo;
+import com.dyz.filxeservice.sal.bo.LogicFileUploadBo;
 
 public class LogicFileModelTranslator {
 
@@ -34,37 +35,41 @@ public class LogicFileModelTranslator {
 			String fromDate, String toDate) {
 		LogicFileQueryBo queryBo = null;
 		try {
-			queryBo = LogicFileQueryBo.builder()
-					.logicFileName(logicFileName)
-					.ishared(Objects.isNull(ishared)?
-							null:Boolean.valueOf(ishared))
-					.partitionId(partitionId)
+			queryBo = LogicFileQueryBo.builder().logicFileName(logicFileName)
+					.ishared(Objects.isNull(ishared) ? null : Boolean.valueOf(ishared)).partitionId(partitionId)
 					.userId(userId)
-					.fromTime(Objects.isNull(fromDate)?
-							null:DateUtils.parseDate(fromDate, ServiceConstant.DATE_FORMAT_SHORT))
-					.toTime(Objects.isNull(toDate)?
-							null:DateUtils.parseDate(toDate, ServiceConstant.DATE_FORMAT_SHORT))
+					.fromTime(Objects.isNull(fromDate) ? null
+							: DateUtils.parseDate(fromDate, ServiceConstant.DATE_FORMAT_SHORT))
+					.toTime(Objects.isNull(toDate) ? null
+							: DateUtils.parseDate(toDate, ServiceConstant.DATE_FORMAT_SHORT))
 					.build();
 		} catch (ParseException e) {
 			throw new IllegalParamException(0, "illegal param");
 		}
-		return queryBo;	
+		return queryBo;
 	}
-	
+
+	/**
+	 * 
+	 * @param partitionId
+	 * @param ishared
+	 * @return
+	 */
+	public static LogicFileUploadBo toBo(Integer partitionId, boolean ishared) {
+		return LogicFileUploadBo.builder().ishared(ishared).partitionId(partitionId).build();
+	}
+
 	/**
 	 * 
 	 * @param vo
 	 * @return
 	 */
 	public static LogicFileUpdateBo toBo(LogicFileUpdateVo vo) {
-		if(Objects.isNull(vo) ) {
+		if (Objects.isNull(vo)) {
 			return null;
 		}
-		return LogicFileUpdateBo.builder().ishared(vo.isIshared())
-				.logicFileId(vo.getLogicFileId())
-				.logicFileName(vo.getLogicFileName())
-				.partitionId(vo.getPartitionId())
-				.build();
+		return LogicFileUpdateBo.builder().ishared(vo.isIshared()).logicFileId(vo.getLogicFileId())
+				.logicFileName(vo.getLogicFileName()).partitionId(vo.getPartitionId()).build();
 	}
 
 	/**
@@ -76,16 +81,11 @@ public class LogicFileModelTranslator {
 		if (Objects.isNull(infoBo)) {
 			return null;
 		}
-		return LogicFileInfoVo.builder()
-				.logicFileId(infoBo.getLogicFileId())
-				.logicFileName(infoBo.getLogicFileName())
-				.ishared(infoBo.isIshared())
-				.partitionId(infoBo.getPartitionId())
-				.userId(infoBo.getUserId())
-				.createTime(DateHandler.getDateString(infoBo.getCreateTime()))
-				.build();
+		return LogicFileInfoVo.builder().logicFileId(infoBo.getLogicFileId()).logicFileName(infoBo.getLogicFileName())
+				.ishared(infoBo.isIshared()).partitionId(infoBo.getPartitionId()).userId(infoBo.getUserId())
+				.createTime(DateHandler.getDateString(infoBo.getCreateTime())).build();
 	}
-	
+
 	/**
 	 * 
 	 * @param boList
@@ -102,5 +102,5 @@ public class LogicFileModelTranslator {
 		});
 		return result;
 	}
-	
+
 }

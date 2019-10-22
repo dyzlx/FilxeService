@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -46,4 +48,8 @@ public class Partition {
 	
 	@Column(name = "user_id", nullable = false)
 	private int userId;
+	
+	@Column(name = "is_default", nullable = false)
+	@Type(type = "yes_no")
+	private boolean isDefault;
 }

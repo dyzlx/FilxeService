@@ -48,7 +48,7 @@ public class PartitionServiceImpl implements PartitionService {
 			throw new IllegalParamException(0, "param can not be null");
 		}
 		Partition newPartition = Partition.builder().createTime(new Date()).description(description).name(partitionName)
-				.userId(userId).build();
+				.userId(userId).isDefault(false).build();
 		partitionRepository.save(newPartition);
 	}
 
@@ -60,6 +60,9 @@ public class PartitionServiceImpl implements PartitionService {
 		Partition partition = partitionRepository.queryByIdAndUserId(updateBo.getPartitionId(), userId);
 		if (Objects.isNull(partition)) {
 			throw new NoDataException(0, "no such partition");
+		}
+		if (partition.isDefault()) {
+			throw new IllegalOperationException(0, "default partition can not be updated");
 		}
 		partition.setName(updateBo.getPartitionName());
 		partition.setDescription(updateBo.getDescription());
@@ -74,6 +77,9 @@ public class PartitionServiceImpl implements PartitionService {
 		Partition partition = partitionRepository.queryByIdAndUserId(partitionId, userId);
 		if (Objects.isNull(partition)) {
 			throw new NoDataException(0, "no such partition");
+		}
+		if (partition.isDefault()) {
+			throw new IllegalOperationException(0, "default partition can not be deleted");
 		}
 		List<LogicFile> logicFilesInPartition = logicFileRepository.queryByPartitionId(partition.getId());
 		if (!CollectionUtils.isEmpty(logicFilesInPartition)) {

@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -41,8 +43,9 @@ public class LogicFile {
 	@Column(name = "create_time", nullable = false)
     private Date createTime;
     
-	@Column(name = "is_shared", columnDefinition = "bit(1) default 0")
-    private boolean isShared;
+	@Column(name = "is_shared", nullable = false)
+	@Type(type = "yes_no")
+	private boolean isShared;
     
 	@Column(name = "partition_id", nullable = false)
     private int partitionId;

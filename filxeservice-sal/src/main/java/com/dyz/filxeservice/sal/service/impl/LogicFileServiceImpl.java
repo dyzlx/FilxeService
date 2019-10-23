@@ -6,8 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.dyz.filxeservice.common.constant.ServiceConstant;
 import com.dyz.filxeservice.common.execption.FileTransferException;
 import com.dyz.filxeservice.common.execption.IllegalParamException;
@@ -35,6 +38,9 @@ import com.dyz.filxeservice.sal.bo.LogicFileUploadBo;
 import com.dyz.filxeservice.sal.service.LogicFileService;
 import com.dyz.filxeservice.sal.translation.LogicFileModelTranslator;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class LogicFileServiceImpl implements LogicFileService {
 
@@ -53,12 +59,15 @@ public class LogicFileServiceImpl implements LogicFileService {
 	@Override
 	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public List<LogicFileInfoBo> queryLogicFileInfo(@NotNull LogicFileQueryBo queryBo) {
+	    log.info("begin to query logicfile. queryBo = {}", queryBo);
 		if (Objects.isNull(queryBo)) {
+		    log.error("param querybo is null!");
 			throw new IllegalParamException(0, "param can not be null");
 		}
 		List<LogicFile> entityList = logicFileRepository.queryLogicFiles(queryBo.getLogicFileName(),
 				queryBo.getPartitionId(), queryBo.getIshared(), queryBo.getUserId(), queryBo.getFromTime(),
 				queryBo.getToTime());
+		log.info("end of query logicfile. result = {}", entityList);
 		return LogicFileModelTranslator.toBoList(entityList);
 	}
 

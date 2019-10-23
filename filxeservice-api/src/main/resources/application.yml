@@ -11,3 +11,5 @@ filxeservice:
   file:
     store:
       path: C:\EricssonWorkSpace\Log\store
+logging:
+  config: classpath:log4j2.xml

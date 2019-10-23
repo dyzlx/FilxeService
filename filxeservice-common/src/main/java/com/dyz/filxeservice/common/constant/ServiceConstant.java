@@ -11,4 +11,8 @@ public class ServiceConstant {
 	public static final String DEFAULT_FROM_DATE = "1996-03-13";
 	
 	public static final String STRING_SPLITE_POINT = "\\.";
+	
+	public static final String HTTP_HEADER_CONTENT_DISPOSITION = "Content-Disposition";
+	        
+	public static final String CONTENT_DISPOSITION_VALUE = "attachment;filename=";
 }

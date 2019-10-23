@@ -6,17 +6,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.dyz.filxeservice.common.constant.ServiceConstant;
 import com.dyz.filxeservice.common.execption.FileTransferException;
 import com.dyz.filxeservice.common.execption.IllegalParamException;
@@ -38,7 +38,8 @@ import com.dyz.filxeservice.sal.translation.LogicFileModelTranslator;
 @Service
 public class LogicFileServiceImpl implements LogicFileService {
 
-	private static final String LOCAL_STORE_PATH = "/Volumes/DYZ-document/Program/Project";
+    @Value("${filxeservice.file.store.path}")
+    private String LOCAL_STORE_PATH;
 
 	@Autowired
 	private LogicFileRepository logicFileRepository;
@@ -50,6 +51,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 	private PhysicalFileRepository physicalFileRepository;
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public List<LogicFileInfoBo> queryLogicFileInfo(@NotNull LogicFileQueryBo queryBo) {
 		if (Objects.isNull(queryBo)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -61,6 +63,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public void deleteLogicFile(@NotNull Integer logicFileId, @NotNull Integer userId) {
 		if (!ObjectUtils.allNotNull(logicFileId, userId)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -79,13 +82,14 @@ public class LogicFileServiceImpl implements LogicFileService {
 			}
 			File file = new File(physicalFile.getLocation(), physicalFile.getName());
 			System.out.println();
-			if (file.exists() && FileUtils.deleteQuietly(file)) {
-				physicalFileRepository.delete(physicalFile);
-			}
+            if (file.exists() && !file.isDirectory() && FileUtils.deleteQuietly(file)) {
+                physicalFileRepository.delete(physicalFile);
+            }
 		}
 	}
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public void updateLogicFileInfo(@NotNull LogicFileUpdateBo updateBo, @NotNull Integer userId) {
 		if (Objects.isNull(updateBo)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -102,6 +106,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public void uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId) {
 		if (!ObjectUtils.allNotNull(file, uploadBo, userId)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -133,6 +138,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public void downloadFile(@NotNull Integer logicFileId, @NotNull Integer userId,
 			@NotNull HttpServletResponse response) {
 		if (!ObjectUtils.allNotNull(logicFileId, userId, response)) {
@@ -151,6 +157,8 @@ public class LogicFileServiceImpl implements LogicFileService {
 		if (!downloadFile.exists()) {
 			throw new NoDataException(0, "no such physical file");
 		}
+        response.setHeader(ServiceConstant.HTTP_HEADER_CONTENT_DISPOSITION,
+                ServiceConstant.CONTENT_DISPOSITION_VALUE + logicFile.getName());
 		try {
 			FileHandler.transferLocalFileToStream(downloadFile, response.getOutputStream());
 		} catch (IOException e) {

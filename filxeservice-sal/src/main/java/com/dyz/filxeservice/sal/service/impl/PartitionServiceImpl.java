@@ -10,6 +10,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dyz.filxeservice.common.execption.IllegalOperationException;
 import com.dyz.filxeservice.common.execption.IllegalParamException;
 import com.dyz.filxeservice.common.execption.NoDataException;
@@ -33,6 +36,7 @@ public class PartitionServiceImpl implements PartitionService {
 	private LogicFileRepository logicFileRepository;
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public List<PartitionInfoBo> queryPartitionInfo(@NotNull PartitionQueryBo queryBo) {
 		if (Objects.isNull(queryBo)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -43,6 +47,7 @@ public class PartitionServiceImpl implements PartitionService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public void createPartition(@NotNull String partitionName, String description, @NotNull Integer userId) {
 		if (!ObjectUtils.allNotNull(partitionName, userId)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -53,6 +58,7 @@ public class PartitionServiceImpl implements PartitionService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public void updatePartition(@NotNull PartitionUpdateBo updateBo, @NotNull Integer userId) {
 		if (!ObjectUtils.allNotNull(updateBo, userId)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -70,6 +76,7 @@ public class PartitionServiceImpl implements PartitionService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
 	public void deletePartition(@NotNull Integer partitionId, @NotNull Integer userId) {
 		if (!ObjectUtils.allNotNull(partitionId, userId)) {
 			throw new IllegalParamException(0, "param can not be null");

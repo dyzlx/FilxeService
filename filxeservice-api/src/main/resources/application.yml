@@ -7,3 +7,7 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+filxeservice:
+  file:
+    store:
+      path: C:\EricssonWorkSpace\Log\store

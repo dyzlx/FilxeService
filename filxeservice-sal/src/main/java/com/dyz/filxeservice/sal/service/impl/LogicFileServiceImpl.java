@@ -44,8 +44,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LogicFileServiceImpl implements LogicFileService {
 
-    @Value("${filxeservice.file.store.path}")
-    private String LOCAL_STORE_PATH;
+	@Value("${filxeservice.file.store.path}")
+	private String LOCAL_STORE_PATH;
 
 	@Autowired
 	private LogicFileRepository logicFileRepository;
@@ -57,11 +57,11 @@ public class LogicFileServiceImpl implements LogicFileService {
 	private PhysicalFileRepository physicalFileRepository;
 
 	@Override
-	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public List<LogicFileInfoBo> queryLogicFileInfo(@NotNull LogicFileQueryBo queryBo) {
-	    log.info("begin to query logicfile. queryBo = {}", queryBo);
+		log.info("begin to query logicfile. queryBo = {}", queryBo);
 		if (Objects.isNull(queryBo)) {
-		    log.error("param querybo is null!");
+			log.warn("param querybo is null!");
 			throw new IllegalParamException(0, "param can not be null");
 		}
 		List<LogicFile> entityList = logicFileRepository.queryLogicFiles(queryBo.getLogicFileName(),
@@ -72,51 +72,64 @@ public class LogicFileServiceImpl implements LogicFileService {
 	}
 
 	@Override
-	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public void deleteLogicFile(@NotNull Integer logicFileId, @NotNull Integer userId) {
+		log.info("begin to delete logicfile, logicFileId = {}, userId = {}", logicFileId, userId);
 		if (!ObjectUtils.allNotNull(logicFileId, userId)) {
 			throw new IllegalParamException(0, "param can not be null");
 		}
 		LogicFile logicFile = logicFileRepository.queryByIdAndUserId(logicFileId, userId);
 		if (Objects.isNull(logicFile)) {
+			log.warn("no such logicfile");
 			throw new NoDataException(0, "no such logic file");
 		}
 		int physicalFileId = logicFile.getPhysicaFileId();
 		logicFileRepository.delete(logicFile);
+		log.info("logicfile has deleted, {}", logicFile);
 		List<LogicFile> others = logicFileRepository.queryByPhysicaFileId(physicalFileId);
 		if (CollectionUtils.isEmpty(others)) {
+			log.info("its physical file no other logicfile reference, delete physical file");
 			PhysicalFile physicalFile = physicalFileRepository.queryById(physicalFileId);
 			if (Objects.isNull(physicalFile)) {
+				log.warn("no such physicalfile, physicalFileId = {}", physicalFileId);
 				throw new NoDataException(0, "no such physical file");
 			}
 			File file = new File(physicalFile.getLocation(), physicalFile.getName());
-			System.out.println();
-            if (file.exists() && !file.isDirectory() && FileUtils.deleteQuietly(file)) {
-                physicalFileRepository.delete(physicalFile);
-            }
+			if (file.exists() && !file.isDirectory() && FileUtils.deleteQuietly(file)) {
+				log.info("local file is deleted, path = {}", file.getAbsoluteFile());
+				physicalFileRepository.delete(physicalFile);
+				log.info("physicafile is deleted, {}", physicalFile);
+			}
 		}
+		log.info("end of delete logicfile");
 	}
 
 	@Override
-	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public void updateLogicFileInfo(@NotNull LogicFileUpdateBo updateBo, @NotNull Integer userId) {
+		log.info("begin to update logicfile info, updateBo = {}, userId = {}", updateBo, userId);
 		if (Objects.isNull(updateBo)) {
 			throw new IllegalParamException(0, "param can not be null");
 		}
-		LogicFile updatedLogicFile = logicFileRepository.queryByIdAndUserId(updateBo.getLogicFileId(), userId);
-		Partition partotion = partitionRepository.queryByIdAndUserId(updateBo.getPartitionId(), userId);
+		Integer logicFileId = updateBo.getLogicFileId();
+		Integer partitionId = updateBo.getPartitionId();
+		LogicFile updatedLogicFile = logicFileRepository.queryByIdAndUserId(logicFileId, userId);
+		Partition partotion = partitionRepository.queryByIdAndUserId(partitionId, userId);
 		if (!ObjectUtils.allNotNull(updatedLogicFile, partotion)) {
+			log.warn("no such logicfile or partition, logicFileId = {}, partitionId = {}", logicFileId, partitionId);
 			throw new NoDataException(0, "no such logic file or partition");
 		}
 		updatedLogicFile.setName(updateBo.getLogicFileName());
 		updatedLogicFile.setPartitionId(partotion.getId());
 		updatedLogicFile.setShared(updateBo.isIshared());
 		logicFileRepository.save(updatedLogicFile);
+		log.info("end of update logicfile info, updated logicfile info = {}", updatedLogicFile);
 	}
 
 	@Override
-	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public void uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId) {
+		log.info("begin to upload file, uploadBo = {}, userId = {}", uploadBo, userId);
 		if (!ObjectUtils.allNotNull(file, uploadBo, userId)) {
 			throw new IllegalParamException(0, "param can not be null");
 		}
@@ -124,19 +137,24 @@ public class LogicFileServiceImpl implements LogicFileService {
 		String originFileName = file.getOriginalFilename();
 		String localFileName = UUID.randomUUID().toString() + originFileName;
 		File localFile = FileHandler.transferToLocalFile(file, LOCAL_STORE_PATH, localFileName);
+		log.info("origin file {} has transfer to local file {}", originFileName, localFile.getAbsolutePath());
 		String[] localFileNameStrs = localFileName.split(ServiceConstant.STRING_SPLITE_POINT);
 		String localFileType = localFileNameStrs[localFileNameStrs.length - 1];
 		PhysicalFile physicalFile = PhysicalFile.builder().location(LOCAL_STORE_PATH).name(localFileName)
 				.size(localFile.length()).type(localFileType).uploadTime(new Date()).build();
 		physicalFileRepository.save(physicalFile);
+		log.info("physical file info has saved, physicalFile = {}", physicalFile);
 		Integer physicalFileId = physicalFile.getId();
 		Integer partitionId = uploadBo.getPartitionId();
 		if (Objects.isNull(partitionId)) {
+			log.info("partitionId is null, so this logic file will belong default partition");
 			List<Partition> defaultPartitions = partitionRepository.queryByIsDefaultAndUserId(true, userId);
 			if (CollectionUtils.isEmpty(defaultPartitions)) {
-				Partition defaultPartition = Partition.builder().createTime(new Date())
-						.isDefault(true).name("Default").userId(userId).build();
+				log.warn("no default partition found, create a default partition");
+				Partition defaultPartition = Partition.builder().createTime(new Date()).isDefault(true).name("Default")
+						.userId(userId).build();
 				partitionRepository.save(defaultPartition);
+				log.info("default partition has created, defaultPartition = {}", defaultPartition);
 				defaultPartitions.add(defaultPartition);
 			}
 			partitionId = defaultPartitions.get(0).getId();
@@ -144,34 +162,40 @@ public class LogicFileServiceImpl implements LogicFileService {
 		LogicFile newLogicFile = LogicFile.builder().createTime(new Date()).isShared(uploadBo.isIshared())
 				.name(originFileName).partitionId(partitionId).physicaFileId(physicalFileId).userId(userId).build();
 		logicFileRepository.save(newLogicFile);
+		log.info("end of upload file, logicfile info has saved, logicFile = {}", newLogicFile);
 	}
 
 	@Override
-	@Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public void downloadFile(@NotNull Integer logicFileId, @NotNull Integer userId,
 			@NotNull HttpServletResponse response) {
+		log.info("begin to download file, logicFileId = {}, userId = {}", logicFileId, userId);
 		if (!ObjectUtils.allNotNull(logicFileId, userId, response)) {
 			throw new IllegalParamException(0, "param can not be null");
 		}
 		LogicFile logicFile = logicFileRepository.queryByIdAndUserId(logicFileId, userId);
 		if (Objects.isNull(logicFile)) {
+			log.warn("no such logicfile");
 			throw new NoDataException(0, "no such logic file");
 		}
 		PhysicalFile physicalFile = physicalFileRepository.queryById(logicFile.getPhysicaFileId());
 		if (Objects.isNull(physicalFile)) {
+			log.warn("no such physical file, physicaFileId = {}", logicFile.getPhysicaFileId());
 			throw new NoDataException(0, "no such physical file");
 		}
 		String filePath = physicalFile.getLocation();
 		File downloadFile = new File(filePath, physicalFile.getName());
 		if (!downloadFile.exists()) {
+			log.warn("local file {} is not exist", filePath + File.separator + physicalFile.getName());
 			throw new NoDataException(0, "no such physical file");
 		}
-        response.setHeader(ServiceConstant.HTTP_HEADER_CONTENT_DISPOSITION,
-                ServiceConstant.CONTENT_DISPOSITION_VALUE + logicFile.getName());
+		response.setHeader(ServiceConstant.HTTP_HEADER_CONTENT_DISPOSITION,
+				ServiceConstant.CONTENT_DISPOSITION_VALUE + logicFile.getName());
 		try {
 			FileHandler.transferLocalFileToStream(downloadFile, response.getOutputStream());
 		} catch (IOException e) {
 			throw new FileTransferException(0, "transfer file to stream fail!");
 		}
+		log.info("end of download file, fileName = {}", logicFile.getName());
 	}
 }

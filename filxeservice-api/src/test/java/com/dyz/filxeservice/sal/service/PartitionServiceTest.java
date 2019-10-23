@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.dyz.filxeservice.sal.bo.PartitionCreateBO;
 import com.dyz.filxeservice.sal.bo.PartitionInfoBo;
 import com.dyz.filxeservice.sal.bo.PartitionQueryBo;
 import com.dyz.filxeservice.sal.bo.PartitionUpdateBo;
@@ -25,19 +26,20 @@ public class PartitionServiceTest {
 		List<PartitionInfoBo> result = partitionService.queryPartitionInfo(queryBo);
 		System.out.println(result);
 	}
-	
+
 	@Test
 	public void addPartitionTest() {
-		partitionService.createPartition("lx_document", "Mrs Xin file folder", 2);
+		partitionService.createPartition(
+				PartitionCreateBO.builder().description("Mrs Xin file folder").partitionName("lx_document").build(), 2);
 	}
-	
+
 	@Test
 	public void updatePartitionTest() {
-		PartitionUpdateBo updateBo = PartitionUpdateBo.builder().description("update partition test")
-				.partitionId(1).partitionName("update").build();
+		PartitionUpdateBo updateBo = PartitionUpdateBo.builder().description("update partition test").partitionId(1)
+				.partitionName("update").build();
 		partitionService.updatePartition(updateBo, 1);
 	}
-	
+
 	@Test
 	public void deletePartitionTest() {
 		partitionService.deletePartition(2, 1);

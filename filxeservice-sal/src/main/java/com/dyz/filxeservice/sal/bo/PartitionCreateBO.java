@@ -5,11 +5,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PartitionUpdateBo {
-	
-	private Integer partitionId;
+public class PartitionCreateBO {
 
 	private String partitionName;
-	
+
 	private String description;
 }

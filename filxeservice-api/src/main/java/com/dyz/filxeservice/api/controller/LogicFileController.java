@@ -24,13 +24,14 @@ import com.dyz.filxeservice.sal.bo.LogicFileQueryBo;
 import com.dyz.filxeservice.sal.service.LogicFileService;
 
 @RestController
-@RequestMapping(value = "logicfile")
+@RequestMapping(value = "logicfiles")
 public class LogicFileController {
 
 	@Autowired
 	private LogicFileService logicfileService;
 
-	@RequestMapping(value = "", method = RequestMethod.GET, produces = { "application/json", "application/xml" })
+	@RequestMapping(value = "", method = RequestMethod.GET,
+			produces = { "application/json", "application/xml" })
 	public ResponseEntity<Result> queryLogicFile(
 			@RequestParam(required = false) String logicFileName,
 			@RequestParam(required = false) String ishared, 
@@ -44,14 +45,16 @@ public class LogicFileController {
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().content(result).build());
 	}
 
-	@RequestMapping(value = "{logicFileId}", method = RequestMethod.DELETE, produces = { "application/json",
-			"application/xml" })
+	@RequestMapping(value = "{logicFileId}", method = RequestMethod.DELETE,
+			produces = { "application/json","application/xml" })
 	public ResponseEntity<Result> deleteLogicFile(@PathVariable Integer logicFileId, @RequestHeader Integer userId) {
 		logicfileService.deleteLogicFile(logicFileId, userId);
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
 	}
 
-	@RequestMapping(value = "", method = RequestMethod.PUT, produces = { "application/json", "application/xml" })
+	@RequestMapping(value = "", method = RequestMethod.PUT,
+			produces = { "application/json", "application/xml" },
+			consumes = { "application/json", "application/xml" })
 	public ResponseEntity<Result> updateLogicFileInfo(@RequestBody LogicFileUpdateVo updateVo,
 			@RequestHeader Integer userId) {
 		logicfileService.updateLogicFileInfo(LogicFileModelTranslator.toBo(updateVo), userId);

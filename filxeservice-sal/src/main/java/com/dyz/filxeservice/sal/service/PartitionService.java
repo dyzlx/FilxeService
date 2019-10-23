@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.dyz.filxeservice.sal.bo.PartitionCreateBO;
 import com.dyz.filxeservice.sal.bo.PartitionInfoBo;
 import com.dyz.filxeservice.sal.bo.PartitionQueryBo;
 import com.dyz.filxeservice.sal.bo.PartitionUpdateBo;
@@ -22,7 +23,7 @@ public interface PartitionService {
 	 * @param partitionName
 	 * @param description
 	 */
-	void createPartition(@NotNull String partitionName, String description, @NotNull Integer userId);
+	void createPartition(@NotNull PartitionCreateBO createBo, @NotNull Integer userId);
 	
 	/**
 	 * 

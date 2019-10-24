@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dyz.filxeservice.common.constant.ServiceConstant;
 import com.dyz.filxeservice.common.execption.FileTransferException;
+import com.dyz.filxeservice.common.execption.IllegalOperationException;
 import com.dyz.filxeservice.common.execption.IllegalParamException;
 import com.dyz.filxeservice.common.execption.NoDataException;
 import com.dyz.filxeservice.common.util.FileHandler;
@@ -117,7 +118,8 @@ public class LogicFileServiceImpl implements LogicFileService {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Integer uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId) {
+	public Integer uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo,
+			@NotNull Integer userId) {
 		log.info("begin to upload file, uploadBo = {}, userId = {}", uploadBo, userId);
 		if (!ObjectUtils.allNotNull(file, uploadBo, userId)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -163,10 +165,14 @@ public class LogicFileServiceImpl implements LogicFileService {
 		if (!ObjectUtils.allNotNull(logicFileId, userId, response)) {
 			throw new IllegalParamException(0, "param can not be null");
 		}
-		LogicFile logicFile = logicFileRepository.queryByIdAndUserId(logicFileId, userId);
+		LogicFile logicFile = logicFileRepository.queryById(logicFileId);
 		if (Objects.isNull(logicFile)) {
 			log.warn("no such logicfile");
 			throw new NoDataException(0, "no such logic file");
+		}
+		if (!Objects.equals(logicFile.getUserId(), userId) && !logicFile.isShared()) {
+			log.warn("download fail, this logic file is not shared");
+			throw new IllegalOperationException(0, "this logic file is not shared");
 		}
 		PhysicalFile physicalFile = physicalFileRepository.queryById(logicFile.getPhysicaFileId());
 		if (Objects.isNull(physicalFile)) {
@@ -189,28 +195,28 @@ public class LogicFileServiceImpl implements LogicFileService {
 		log.info("end of download file, fileName = {}", logicFile.getName());
 	}
 
-    /**
-     * 
-     * @param physicalFileId
-     */
-    private void deletePhysicalFileAndLocalFile(Integer physicalFileId) {
-        PhysicalFile physicalFile = physicalFileRepository.queryById(physicalFileId);
-        if (Objects.isNull(physicalFile)) {
-            log.warn("no such physicalfile, physicalFileId = {}", physicalFileId);
-            throw new NoDataException(0, "no such physical file");
-        }
-        log.info("begin to delete physical file {}", physicalFile);
-        File file = new File(physicalFile.getLocation(), physicalFile.getName());
-        if (!file.exists()) {
-            physicalFileRepository.delete(physicalFile);
-            log.warn("local file {} not exists, just delete physical file object", file.getAbsolutePath());
-            return;
-        }
-        if (file.isDirectory() || !file.delete()) {
-            log.error("local file {} delete fail", file.getAbsoluteFile());
-            return;
-        }
-        physicalFileRepository.delete(physicalFile);
-        log.info("physical file and local file delete success.");
-    }
+	/**
+	 * 
+	 * @param physicalFileId
+	 */
+	private void deletePhysicalFileAndLocalFile(Integer physicalFileId) {
+		PhysicalFile physicalFile = physicalFileRepository.queryById(physicalFileId);
+		if (Objects.isNull(physicalFile)) {
+			log.warn("no such physicalfile, physicalFileId = {}", physicalFileId);
+			throw new NoDataException(0, "no such physical file");
+		}
+		log.info("begin to delete physical file {}", physicalFile);
+		File file = new File(physicalFile.getLocation(), physicalFile.getName());
+		if (!file.exists()) {
+			physicalFileRepository.delete(physicalFile);
+			log.warn("local file {} not exists, just delete physical file object", file.getAbsolutePath());
+			return;
+		}
+		if (file.isDirectory() || !file.delete()) {
+			log.error("local file {} delete fail", file.getAbsoluteFile());
+			return;
+		}
+		physicalFileRepository.delete(physicalFile);
+		log.info("physical file and local file delete success.");
+	}
 }

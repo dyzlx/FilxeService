@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 	<properties>
-	    <!-- /Users/duyunze/log/filxeservice/ -->
+	    <!-- /Volumes/DYZ-document/Program/X-CodeRunSpace/log/ -->
 	    <!-- C:\var\dyz\log\filxeservice\ -->
-		<property name="LOG_HOME">C:\var\dyz\log\filxeservice\</property>
+		<property name="LOG_HOME">/Volumes/DYZ-document/Program/X-CodeRunSpace/log/</property>
 		<property name="FILE_NAME">filxe-service</property>
 		<property name="log.sql.level">info</property>
 	</properties>

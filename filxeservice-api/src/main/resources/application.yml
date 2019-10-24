@@ -10,6 +10,7 @@ spring:
 filxeservice:
   file:
     store:
-      path: /Volumes/DYZ-document/Program/WorkFolder/
+      # /Volumes/DYZ-document/Program/WorkFolder/
+      path: C:\var\dyz\store
 logging:
   config: classpath:log4j2.xml

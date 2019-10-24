@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,17 +88,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 		List<LogicFile> others = logicFileRepository.queryByPhysicaFileId(physicalFileId);
 		if (CollectionUtils.isEmpty(others)) {
 			log.info("its physical file no other logicfile reference, delete physical file");
-			PhysicalFile physicalFile = physicalFileRepository.queryById(physicalFileId);
-			if (Objects.isNull(physicalFile)) {
-				log.warn("no such physicalfile, physicalFileId = {}", physicalFileId);
-				throw new NoDataException(0, "no such physical file");
-			}
-			File file = new File(physicalFile.getLocation(), physicalFile.getName());
-			if (file.exists() && !file.isDirectory() && FileUtils.deleteQuietly(file)) {
-				log.info("local file is deleted, path = {}", file.getAbsoluteFile());
-				physicalFileRepository.delete(physicalFile);
-				log.info("physicafile is deleted, {}", physicalFile);
-			}
+			deletePhysicalFileAndLocalFile(physicalFileId);
 		}
 		log.info("end of delete logicfile");
 	}
@@ -188,7 +177,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 		File downloadFile = new File(filePath, physicalFile.getName());
 		if (!downloadFile.exists()) {
 			log.warn("local file {} is not exist", filePath + File.separator + physicalFile.getName());
-			throw new NoDataException(0, "no such physical file");
+			throw new NoDataException(0, "no such local file");
 		}
 		response.setHeader(ServiceConstant.HTTP_HEADER_CONTENT_DISPOSITION,
 				ServiceConstant.CONTENT_DISPOSITION_VALUE + logicFile.getName());
@@ -199,4 +188,29 @@ public class LogicFileServiceImpl implements LogicFileService {
 		}
 		log.info("end of download file, fileName = {}", logicFile.getName());
 	}
+
+    /**
+     * 
+     * @param physicalFileId
+     */
+    private void deletePhysicalFileAndLocalFile(Integer physicalFileId) {
+        PhysicalFile physicalFile = physicalFileRepository.queryById(physicalFileId);
+        if (Objects.isNull(physicalFile)) {
+            log.warn("no such physicalfile, physicalFileId = {}", physicalFileId);
+            throw new NoDataException(0, "no such physical file");
+        }
+        log.info("begin to delete physical file {}", physicalFile);
+        File file = new File(physicalFile.getLocation(), physicalFile.getName());
+        if (!file.exists()) {
+            physicalFileRepository.delete(physicalFile);
+            log.warn("local file {} not exists, just delete physical file object", file.getAbsolutePath());
+            return;
+        }
+        if (file.isDirectory() || !file.delete()) {
+            log.error("local file {} delete fail", file.getAbsoluteFile());
+            return;
+        }
+        physicalFileRepository.delete(physicalFile);
+        log.info("physical file and local file delete success.");
+    }
 }

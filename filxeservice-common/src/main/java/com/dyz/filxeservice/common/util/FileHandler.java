@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dyz.filxeservice.common.execption.FileTransferException;
 import com.dyz.filxeservice.common.execption.NoDataException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FileHandler {
 
 	/**
@@ -21,8 +24,10 @@ public class FileHandler {
 	public static File transferToLocalFile(MultipartFile file, String localFilePath, String fileName) {
 		File localFile = new File(localFilePath, fileName).getAbsoluteFile();
 		try {
+		    log.info("transfer {} to local filePath {}", file.getOriginalFilename(), localFilePath);
 			file.transferTo(localFile);
 		} catch (Exception e) {
+		    log.error("transfer to local file error!", e);
 			throw new FileTransferException(0, "file transfer error");
 		}
 		return localFile;
@@ -35,7 +40,9 @@ public class FileHandler {
 	 * @return file name
 	 */
 	public static String transferLocalFileToStream(File file, OutputStream os) {
+	    log.info("transfer local file {} to stream", file.getAbsolutePath());
 		if (!file.exists()) {
+		    log.warn("local not exists");
 			throw new NoDataException(0, "file is not exist!");
 		}
 		byte[] buffer = new byte[1024];
@@ -50,6 +57,7 @@ public class FileHandler {
 				i = bis.read(buffer);
 			}
 		} catch (Exception e) {
+		    log.error("transfer to local file error!", e);
 			throw new FileTransferException(0, "transfer file to stream fail!");
 		} finally {
 			if (bis != null) {

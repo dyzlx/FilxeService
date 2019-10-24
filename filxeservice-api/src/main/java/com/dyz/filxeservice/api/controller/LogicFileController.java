@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dyz.filxeservice.api.model.CommonPostResponse;
 import com.dyz.filxeservice.api.model.LogicFileInfoVo;
 import com.dyz.filxeservice.api.model.LogicFileUpdateVo;
 import com.dyz.filxeservice.api.model.Result;
@@ -67,8 +68,9 @@ public class LogicFileController {
 	public ResponseEntity<Result> uploadLogicFile(@RequestParam MultipartFile file,
 			@RequestParam(required = false) Integer partitionId, @RequestParam(required = false) boolean ishared,
 			@RequestHeader Integer userId) {
-		logicfileService.uploadFile(file, LogicFileModelTranslator.toBo(partitionId, ishared), userId);
-		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
+		Integer id = logicfileService.uploadFile(file, LogicFileModelTranslator.toBo(partitionId, ishared), userId);
+		return ResponseEntity.status(HttpStatus.OK)
+		        .body(Result.builder().content(new CommonPostResponse(id)).build());
 	}
 
 	@RequestMapping(value = "download/{logicFileId}", method = RequestMethod.GET)

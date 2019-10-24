@@ -38,8 +38,10 @@ public interface LogicFileService {
 	 * upload file
 	 * @param file
 	 * @param uploadBo
+	 * @param userId
+	 * @return
 	 */
-	void uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId);
+	Integer uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId);
 	
 	/**
 	 * download file

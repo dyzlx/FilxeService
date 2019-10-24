@@ -128,7 +128,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId) {
+	public Integer uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId) {
 		log.info("begin to upload file, uploadBo = {}, userId = {}", uploadBo, userId);
 		if (!ObjectUtils.allNotNull(file, uploadBo, userId)) {
 			throw new IllegalParamException(0, "param can not be null");
@@ -163,6 +163,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 				.name(originFileName).partitionId(partitionId).physicaFileId(physicalFileId).userId(userId).build();
 		logicFileRepository.save(newLogicFile);
 		log.info("end of upload file, logicfile info has saved, logicFile = {}", newLogicFile);
+		return newLogicFile.getId();
 	}
 
 	@Override

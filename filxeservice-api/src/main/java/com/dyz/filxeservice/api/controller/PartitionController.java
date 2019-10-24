@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.dyz.filxeservice.api.model.CommonPostResponse;
 import com.dyz.filxeservice.api.model.PartitionCreateVo;
 import com.dyz.filxeservice.api.model.PartitionInfoVo;
 import com.dyz.filxeservice.api.model.PartitionUpdateVo;
@@ -45,8 +47,9 @@ public class PartitionController {
 			consumes = { "application/json", "application/xml" })
 	public ResponseEntity<Result> createPartition(@RequestBody PartitionCreateVo createVo,
 			@RequestHeader Integer userId) {
-		partitionService.createPartition(PartitionModelTranslator.toBo(createVo), userId);
-		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
+		Integer id = partitionService.createPartition(PartitionModelTranslator.toBo(createVo), userId);
+		return ResponseEntity.status(HttpStatus.OK)
+		        .body(Result.builder().content(new CommonPostResponse(id)).build());
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.PUT,

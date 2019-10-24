@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 	<properties>
-		<property name="LOG_HOME">/Users/duyunze/log/filxeservice/</property>
+	    <!-- /Users/duyunze/log/filxeservice/ -->
+	    <!-- C:\var\dyz\log\filxeservice\ -->
+		<property name="LOG_HOME">C:\var\dyz\log\filxeservice\</property>
 		<property name="FILE_NAME">filxe-service</property>
 		<property name="log.sql.level">info</property>
 	</properties>
@@ -17,8 +19,8 @@
 			filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd HH-mm}-%i.log">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l - %msg%n" />
 			<Policies>
-				<TimeBasedTriggeringPolicy interval="1" />
-				<SizeBasedTriggeringPolicy size="10 MB" />
+				<TimeBasedTriggeringPolicy interval="5" />
+				<SizeBasedTriggeringPolicy size="25 MB" />
 			</Policies>
 			<DefaultRolloverStrategy max="20" />
 		</RollingRandomAccessFile>

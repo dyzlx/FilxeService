@@ -54,7 +54,7 @@ public class PartitionServiceImpl implements PartitionService {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void createPartition(@NotNull PartitionCreateBO createBo, @NotNull Integer userId) {
+	public Integer createPartition(@NotNull PartitionCreateBO createBo, @NotNull Integer userId) {
 		log.info("begin to create partition, partitionBo = {}, userId = {}", createBo, userId);
 		String partitionName = createBo.getPartitionName();
 		if (!ObjectUtils.allNotNull(createBo, partitionName, userId)) {
@@ -64,6 +64,7 @@ public class PartitionServiceImpl implements PartitionService {
 				.name(partitionName).userId(userId).isDefault(false).build();
 		partitionRepository.save(newPartition);
 		log.info("end of create partition, partition = {}", newPartition);
+		return newPartition.getId();
 	}
 
 	@Override

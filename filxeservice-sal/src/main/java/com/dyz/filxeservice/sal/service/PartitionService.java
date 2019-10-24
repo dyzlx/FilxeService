@@ -20,10 +20,11 @@ public interface PartitionService {
 	
 	/**
 	 * 
-	 * @param partitionName
-	 * @param description
+	 * @param createBo
+	 * @param userId
+	 * @return
 	 */
-	void createPartition(@NotNull PartitionCreateBO createBo, @NotNull Integer userId);
+	Integer createPartition(@NotNull PartitionCreateBO createBo, @NotNull Integer userId);
 	
 	/**
 	 * 

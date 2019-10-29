@@ -33,7 +33,7 @@ public class LogicFileQueryBo {
 			try {
 				return DateUtils.parseDate(ServiceConstant.DEFAULT_FROM_DATE, ServiceConstant.DATE_FORMAT_SHORT);
 			} catch (ParseException e) {
-				throw new IllegalParamException("Illega param fromTime");
+				throw new IllegalParamException(0, "Illega param fromTime");
 			}
 		}
 		return fromTime;
@@ -44,7 +44,7 @@ public class LogicFileQueryBo {
 			try {
 				return DateUtils.parseDate(ServiceConstant.DEFAULT_TO_DATE, ServiceConstant.DATE_FORMAT_SHORT);
 			} catch (ParseException e) {
-				throw new IllegalParamException("Illega param toTime");
+				throw new IllegalParamException(0, "Illega param toTime");
 			}
 		}
 		return toTime;

@@ -2,6 +2,7 @@ package com.dyz.filxeservice.sal.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -218,5 +219,30 @@ public class LogicFileServiceImpl implements LogicFileService {
 		}
 		physicalFileRepository.delete(physicalFile);
 		log.info("physical file and local file delete success.");
+	}
+
+	@Override
+	public void deleteLogicFiles(@NotNull List<Integer> logicFileIds, @NotNull Integer userId) {
+		log.info("delete logicFiles, ids = {}, userId = {}", logicFileIds, userId);
+		if (Objects.isNull(logicFileIds)) {
+			throw new IllegalParamException(0, "param is null");
+		}
+		for (Integer id : logicFileIds) {
+			deleteLogicFile(id, userId);
+		}
+	}
+
+	@Override
+	public List<Integer> uploadFiles(@NotNull MultipartFile[] files, @NotNull LogicFileUploadBo uploadBo,
+			@NotNull Integer userId) {
+		if (Objects.isNull(files)) {
+			throw new IllegalParamException(0, "param is null");
+		}
+		log.info("upload logicfiles, files count = {}, userId = {}", files.length, userId);
+		List<Integer> resultIds = new ArrayList<>();
+		for (MultipartFile file : files) {
+			resultIds.add(uploadFile(file, uploadBo, userId));
+		}
+		return resultIds;
 	}
 }

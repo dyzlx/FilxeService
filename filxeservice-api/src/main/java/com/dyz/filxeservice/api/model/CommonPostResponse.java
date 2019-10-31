@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonPostResponse {
+public class CommonPostResponse<T> {
 
-    private Integer resourceId;
+    private T resourceId;
 }

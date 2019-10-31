@@ -27,6 +27,13 @@ public interface LogicFileService {
 	 * @param userId
 	 */
 	void deleteLogicFile(@NotNull Integer logicFileId, @NotNull Integer userId);
+	
+	/**
+	 * delete logic files
+	 * @param logicFileIds
+	 * @param userId
+	 */
+	void deleteLogicFiles(@NotNull List<Integer> logicFileIds, @NotNull Integer userId);
 
 	/**
 	 * update logic file info by logic file id and update info
@@ -42,6 +49,15 @@ public interface LogicFileService {
 	 * @return
 	 */
 	Integer uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId);
+	
+	/**
+	 * upload files
+	 * @param files
+	 * @param uploadBo
+	 * @param userId
+	 * @return
+	 */
+	List<Integer> uploadFiles(@NotNull MultipartFile[] files, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId);
 	
 	/**
 	 * download file

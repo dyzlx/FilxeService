@@ -3,7 +3,7 @@
 	<properties>
 	    <!-- /Volumes/DYZ-document/Program/X-CodeRunSpace/log/ -->
 	    <!-- C:\var\dyz\log\filxeservice\ -->
-		<property name="LOG_HOME">/Volumes/DYZ-document/Program/X-CodeRunSpace/log/</property>
+		<property name="LOG_HOME">/Volumes/DYZ-document/Program/X-CodeRunSpace/log/filxeservice/</property>
 		<property name="FILE_NAME">filxe-service</property>
 		<property name="log.sql.level">info</property>
 	</properties>

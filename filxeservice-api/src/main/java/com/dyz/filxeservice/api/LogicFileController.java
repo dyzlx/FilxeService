@@ -1,4 +1,4 @@
-package com.dyz.filxeservice.api.controller;
+package com.dyz.filxeservice.api;
 
 import java.util.List;
 
@@ -52,6 +52,13 @@ public class LogicFileController {
 		logicfileService.deleteLogicFile(logicFileId, userId);
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
 	}
+	
+	@RequestMapping(value = "", method = RequestMethod.DELETE,
+			produces = { "application/json","application/xml" })
+	public ResponseEntity<Result> deleteLogicFiles(@RequestBody List<Integer> logicFileIds, @RequestHeader Integer userId) {
+		logicfileService.deleteLogicFiles(logicFileIds, userId);
+		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
+	}
 
 	@RequestMapping(value = "", method = RequestMethod.PUT,
 			produces = { "application/json", "application/xml" },
@@ -65,12 +72,12 @@ public class LogicFileController {
 	@RequestMapping(value = "upload", method = RequestMethod.POST,
 			produces = { "application/json","application/xml" },
 			consumes = { "multipart/form-data" })
-	public ResponseEntity<Result> uploadLogicFile(@RequestParam MultipartFile file,
+	public ResponseEntity<Result> uploadLogicFile(@RequestParam MultipartFile[] file,
 			@RequestParam(required = false) Integer partitionId, @RequestParam(required = false) boolean ishared,
 			@RequestHeader Integer userId) {
-		Integer id = logicfileService.uploadFile(file, LogicFileModelTranslator.toBo(partitionId, ishared), userId);
+		List<Integer> ids = logicfileService.uploadFiles(file, LogicFileModelTranslator.toBo(partitionId, ishared), userId);
 		return ResponseEntity.status(HttpStatus.OK)
-		        .body(Result.builder().content(new CommonPostResponse(id)).build());
+		        .body(Result.builder().content(new CommonPostResponse<List<Integer>>(ids)).build());
 	}
 
 	@RequestMapping(value = "download/{logicFileId}", method = RequestMethod.GET)
@@ -81,5 +88,4 @@ public class LogicFileController {
 		logicfileService.downloadFile(logicFileId, userId, response);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
-
 }

@@ -1,4 +1,4 @@
-package com.dyz.filxeservice.api.controller;
+package com.dyz.filxeservice.api;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class PartitionController {
 			@RequestHeader Integer userId) {
 		Integer id = partitionService.createPartition(PartitionModelTranslator.toBo(createVo), userId);
 		return ResponseEntity.status(HttpStatus.OK)
-		        .body(Result.builder().content(new CommonPostResponse(id)).build());
+		        .body(Result.builder().content(new CommonPostResponse<Integer>(id)).build());
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.PUT,

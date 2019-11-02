@@ -2,10 +2,12 @@ package com.dyz.filxeservice.client.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dyz.filxeservice.client.LogicFileClient;
 
+@Component
 public class LogicFileClientImpl implements LogicFileClient {
 
 	@Override

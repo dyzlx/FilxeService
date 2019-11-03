@@ -245,4 +245,11 @@ public class LogicFileServiceImpl implements LogicFileService {
 		}
 		return resultIds;
 	}
+
+	@Override
+	public void downloadFiles(@NotNull List<Integer> logicFileIds, @NotNull Integer userId,
+			@NotNull HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
 }

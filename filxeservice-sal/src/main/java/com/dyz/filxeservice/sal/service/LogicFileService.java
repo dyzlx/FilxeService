@@ -51,7 +51,8 @@ public interface LogicFileService {
 	Integer uploadFile(@NotNull MultipartFile file, @NotNull LogicFileUploadBo uploadBo, @NotNull Integer userId);
 	
 	/**
-	 * upload files
+	 * upload files.
+	 * multiple files upload, these files will belong to same partition
 	 * @param files
 	 * @param uploadBo
 	 * @param userId
@@ -66,4 +67,15 @@ public interface LogicFileService {
 	 * @param response
 	 */
 	void downloadFile(@NotNull Integer logicFileId, @NotNull Integer userId, @NotNull HttpServletResponse response);
+	
+	/**
+	 * download files.
+	 * multiple files download.
+	 * these files will compress into compressed files.
+	 * client will get a *.zip file
+	 * @param logicFileIds
+	 * @param userId
+	 * @param response
+	 */
+	void downloadFiles(@NotNull List<Integer> logicFileIds, @NotNull Integer userId, @NotNull HttpServletResponse response);
 }

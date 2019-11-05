@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dyz.filxeservice.api.model.CommonPostResponse;
 import com.dyz.filxeservice.api.model.LogicFileInfoVo;
 import com.dyz.filxeservice.api.model.LogicFileUpdateVo;
+import com.dyz.filxeservice.api.model.MultipleFileDownloadVo;
 import com.dyz.filxeservice.api.model.Result;
 import com.dyz.filxeservice.api.translation.LogicFileModelTranslator;
 import com.dyz.filxeservice.sal.bo.LogicFileQueryBo;
@@ -86,6 +87,15 @@ public class LogicFileController {
 			@RequestHeader Integer userId,
 			HttpServletResponse response) {
 		logicfileService.downloadFile(logicFileId, userId, response);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@RequestMapping(value = "download", method = RequestMethod.GET)
+	public ResponseEntity<?> downloadLogicFiles(
+			@RequestBody MultipleFileDownloadVo downloadVo,
+			@RequestHeader Integer userId,
+			HttpServletResponse response) {
+		logicfileService.downloadFiles(LogicFileModelTranslator.toBo(downloadVo), userId, response);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

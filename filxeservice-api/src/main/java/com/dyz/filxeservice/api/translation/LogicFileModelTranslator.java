@@ -11,6 +11,7 @@ import org.apache.commons.lang3.time.DateUtils;
 
 import com.dyz.filxeservice.api.model.LogicFileInfoVo;
 import com.dyz.filxeservice.api.model.LogicFileUpdateVo;
+import com.dyz.filxeservice.api.model.MultipleFileDownloadVo;
 import com.dyz.filxeservice.common.constant.ServiceConstant;
 import com.dyz.filxeservice.common.execption.IllegalParamException;
 import com.dyz.filxeservice.common.util.DateHandler;
@@ -18,6 +19,7 @@ import com.dyz.filxeservice.sal.bo.LogicFileInfoBo;
 import com.dyz.filxeservice.sal.bo.LogicFileQueryBo;
 import com.dyz.filxeservice.sal.bo.LogicFileUpdateBo;
 import com.dyz.filxeservice.sal.bo.LogicFileUploadBo;
+import com.dyz.filxeservice.sal.bo.MultipleFileDowloadBo;
 
 public class LogicFileModelTranslator {
 
@@ -70,6 +72,19 @@ public class LogicFileModelTranslator {
 		}
 		return LogicFileUpdateBo.builder().ishared(vo.isIshared()).logicFileId(vo.getLogicFileId())
 				.logicFileName(vo.getLogicFileName()).partitionId(vo.getPartitionId()).build();
+	}
+	
+	/**
+	 * 
+	 * @param downloadVo
+	 * @return
+	 */
+	public static MultipleFileDowloadBo toBo(MultipleFileDownloadVo downloadVo) {
+		if (Objects.isNull(downloadVo)) {
+			return null;
+		}
+		return MultipleFileDowloadBo.builder().compressionFileName(downloadVo.getCompressionFileName())
+				.logicFileIds(downloadVo.getLogicFileIds()).build();
 	}
 
 	/**

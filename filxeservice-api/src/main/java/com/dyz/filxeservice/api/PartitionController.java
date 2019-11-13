@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dyz.filxeservice.api.model.CommonPostResponse;
 import com.dyz.filxeservice.api.model.PartitionCreateVo;
 import com.dyz.filxeservice.api.model.PartitionInfoVo;
 import com.dyz.filxeservice.api.model.PartitionUpdateVo;
@@ -49,7 +48,7 @@ public class PartitionController {
 			@RequestHeader Integer userId) {
 		Integer id = partitionService.createPartition(PartitionModelTranslator.toBo(createVo), userId);
 		return ResponseEntity.status(HttpStatus.OK)
-		        .body(Result.builder().content(new CommonPostResponse<Integer>(id)).build());
+		        .body(Result.builder().content(id).build());
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.PUT,

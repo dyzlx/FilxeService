@@ -1,4 +1,4 @@
-package com.dyz.filxeservice.api.model;
+package com.dyz.filxeservice.client.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonPostResponse<T> {
+public class Result<T> {
 
-    private T resourceId;
+	private int code;
+
+	private String message;
+
+	private T content;
 }

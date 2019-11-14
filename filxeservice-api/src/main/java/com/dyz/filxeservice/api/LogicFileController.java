@@ -90,11 +90,11 @@ public class LogicFileController {
 	}
 	
 	@RequestMapping(value = "download", method = RequestMethod.GET)
-	public ResponseEntity<?> downloadLogicFiles(
+	public ResponseEntity<?> downloadAsZip(
 			@RequestBody MultipleFileDownloadVo downloadVo,
 			@RequestHeader Integer userId,
 			HttpServletResponse response) {
-		logicfileService.downloadFiles(LogicFileModelTranslator.toBo(downloadVo), userId, response);
+		logicfileService.downloadAsZip(LogicFileModelTranslator.toBo(downloadVo), userId, response);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

@@ -40,6 +40,7 @@ import com.dyz.filxeservice.sal.bo.LogicFileUploadBo;
 import com.dyz.filxeservice.sal.bo.MultipleFileDowloadBo;
 import com.dyz.filxeservice.sal.service.LogicFileService;
 import com.dyz.filxeservice.sal.translation.LogicFileModelTranslator;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -173,6 +174,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 		return newLogicFile.getId();
 	}
 
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	@Override
 	public List<Integer> uploadFiles(@NotNull MultipartFile[] files, @NotNull LogicFileUploadBo uploadBo,
 			@NotNull Integer userId) {
@@ -195,44 +197,50 @@ public class LogicFileServiceImpl implements LogicFileService {
 		if (!ObjectUtils.allNotNull(logicFileId, userId, response)) {
 			throw new IllegalParamException(0, "param can not be null");
 		}
-		LogicFile logicFile = getDownloadLogicFile(logicFileId, userId);
+		LogicFile logicFile = logicFileRepository.queryById(logicFileId);
+		if (Objects.isNull(logicFile)) {
+			log.error("no such logic file, id = {}, userId = {}", logicFileId, userId);
+			throw new NoDataException(0, "no such local file, id = " + logicFileId);
+		}
 		File downloadFile = getDownloadedFileByLogicFileAndUserId(logicFile, userId);
 		setDownloadFileToResponse(downloadFile, response, logicFile.getName());
 		log.info("end of download file, fileName = {}", logicFile.getName());
 	}
 
 	@Override
-	public void downloadFiles(@NotNull MultipleFileDowloadBo downloadBo, @NotNull Integer userId,
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public void downloadAsZip(@NotNull MultipleFileDowloadBo downloadBo, @NotNull Integer userId,
 			@NotNull HttpServletResponse response) {
-		log.info("begin to multiple file download, bo = {}, userId = {}",downloadBo, userId);
+		log.info("begin to multiple file download, bo = {}, userId = {}", downloadBo, userId);
 		if (!ObjectUtils.allNotNull(downloadBo, downloadBo.getLogicFileIds(), userId, response)) {
 			throw new IllegalParamException(0, "param can not be null");
 		}
-		List<Integer> logicFileIds = downloadBo.getLogicFileIds();
-		List<LogicFile> logicFiles = new ArrayList<>();
-		String resultFileName = downloadBo.getCompressionFileName();
-		logicFileIds.stream().forEach(x -> {
-			logicFiles.add(getDownloadLogicFile(x, userId));
-		});
-		if (CollectionUtils.isEmpty(logicFiles)) {
-			log.error("no such logic files, ids = {}", logicFileIds);
-			throw new NoDataException(0, "no such local files");
+		String resultZipFileName = downloadBo.getCompressionFileName();
+		if (StringUtils.isBlank(resultZipFileName)) {
+			resultZipFileName = UUID.randomUUID().toString();
 		}
-		List<File> uncompressionFiles = getDownloadedFilesByLogicFilesAndUserId(logicFiles, userId);
+		List<File> uncompressionFiles = new ArrayList<>();
+		downloadBo.getLogicFileIds().stream().forEach(x -> {
+			LogicFile logicFile = logicFileRepository.queryById(x);
+			if (Objects.isNull(logicFile)) {
+				log.error("no such logic file, id = {}, userId = {}", x, userId);
+				throw new NoDataException(0, "no such local file, id = " + x);
+			}
+			uncompressionFiles.add(getDownloadedFileByLogicFileAndUserId(logicFile, userId));
+		});
 		log.info("get uncompression file set, file count = {}, set = {}", uncompressionFiles.size(),
 				uncompressionFiles);
-		if (StringUtils.isBlank(resultFileName)) {
-			resultFileName = UUID.randomUUID().toString();
-		}
-		File resultCompressFile = new File(LOCAL_TEMP_STORE_PATH, resultFileName);
+		File resultCompressFile = new File(LOCAL_TEMP_STORE_PATH, resultZipFileName);
 		log.info("target files will compress into temp file {}", resultCompressFile.getAbsolutePath());
 		FileHandler.zip(uncompressionFiles, resultCompressFile);
 		if (!resultCompressFile.exists()) {
-			log.error("file compression fail, result file not exist, path = {}", resultCompressFile.getAbsolutePath());
+			log.error("file compression fail, result file not exist");
 			throw new NoDataException(0, "file compression fail, result file not exist");
 		}
 		log.info("target files compress success, path = {}", resultCompressFile.getAbsolutePath());
 		setDownloadFileToResponse(resultCompressFile, response);
+		log.info("delete local zip file");
+		resultCompressFile.delete();
 		log.info("end of multiple file download, fileName = {}", resultCompressFile.getName());
 	}
 
@@ -262,45 +270,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 	}
 
 	/**
-	 * 
-	 * @param logicFileId
-	 * @param userId
-	 * @return
-	 */
-	private LogicFile getDownloadLogicFile(Integer logicFileId, Integer userId) {
-		if (!ObjectUtils.allNotNull(logicFileId, userId)) {
-			return null;
-		}
-		LogicFile logicFile = logicFileRepository.queryById(logicFileId);
-		if (Objects.isNull(logicFile)) {
-			log.error("no such logic file, id = {}, userId = {}", logicFileId, userId);
-			throw new NoDataException(0, "no such local file, id = " + logicFileId);
-		}
-		if (!Objects.equals(logicFile.getUserId(), userId) && !logicFile.isShared()) {
-			log.error("download fail, this logic file is not shared");
-			throw new IllegalOperationException(0, "this logic file is not shared, id = " + logicFileId);
-		}
-		return logicFile;
-	}
-
-	/**
-	 * 
-	 * @param logicFiles
-	 * @param userId
-	 * @return
-	 */
-	private List<File> getDownloadedFilesByLogicFilesAndUserId(List<LogicFile> logicFiles, Integer userId) {
-		if (Objects.isNull(logicFiles)) {
-			return null;
-		}
-		List<File> results = new ArrayList<>();
-		logicFiles.stream().forEach(x -> {
-			results.add(getDownloadedFileByLogicFileAndUserId(x, userId));
-		});
-		return results;
-	}
-
-	/**
+	 * get resource file and check downloaded permissions
 	 * 
 	 * @param logicFile
 	 * @param userId
@@ -310,8 +280,8 @@ public class LogicFileServiceImpl implements LogicFileService {
 		if (!ObjectUtils.allNotNull(logicFile, userId)) {
 			return null;
 		}
-		if (!Objects.equals(logicFile.getUserId(), userId) && !logicFile.isShared()) {
-			log.error("download fail, this logic file is not shared");
+		if (!checkDownloadFiles(logicFile, userId)) {
+			log.error("download fail, this file can not downloaded by user = {}", userId);
 			throw new IllegalOperationException(0, "this logic file is not shared");
 		}
 		PhysicalFile physicalFile = physicalFileRepository.queryById(logicFile.getPhysicaFileId());
@@ -326,6 +296,31 @@ public class LogicFileServiceImpl implements LogicFileService {
 			throw new NoDataException(0, "no such local file");
 		}
 		return downloadFile;
+	}
+
+	/**
+	 * The file can be downloaded in the following circumstances. 1) file is shared.
+	 * 2) file is belong to current user. 3) file is in default partition.
+	 * 
+	 * @param logicFile
+	 * @param userId
+	 * @return
+	 */
+	private boolean checkDownloadFiles(LogicFile logicFile, Integer userId) {
+		if (!ObjectUtils.allNotNull(logicFile, userId)) {
+			return false;
+		}
+		if (logicFile.isShared()) {
+			return true;
+		}
+		if (userId.equals(logicFile.getUserId())) {
+			return true;
+		}
+		Partition partition = partitionRepository.queryById(logicFile.getPartitionId());
+		if (partition.isDefault()) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -350,6 +345,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 		} catch (IOException e) {
 			throw new FileTransferException(0, "transfer file to stream fail!");
 		}
+		log.info("set download file to http response finish");
 	}
 
 }

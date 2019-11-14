@@ -85,6 +85,6 @@ public interface LogicFileService {
 	 * @param userId
 	 * @param response
 	 */
-	void downloadFiles(@NotNull MultipleFileDowloadBo downloadBo, @NotNull Integer userId,
+	void downloadAsZip(@NotNull MultipleFileDowloadBo downloadBo, @NotNull Integer userId,
 			@NotNull HttpServletResponse response);
 }

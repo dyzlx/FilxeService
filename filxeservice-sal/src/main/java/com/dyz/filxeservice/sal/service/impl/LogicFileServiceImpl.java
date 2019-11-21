@@ -146,8 +146,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 		String localFileName = UUID.randomUUID().toString() + originFileName;
 		File localFile = FileHandler.transferToLocalFile(file, LOCAL_STORE_PATH, localFileName);
 		log.info("origin file {} has transfer to local file {}", originFileName, localFile.getAbsolutePath());
-		String[] localFileNameStrs = localFileName.split(ServiceConstant.STRING_SPLITE_POINT);
-		String localFileType = localFileNameStrs[localFileNameStrs.length - 1];
+		String localFileType = getFileTypeFromFileName(localFileName);
 		PhysicalFile physicalFile = PhysicalFile.builder().location(LOCAL_STORE_PATH).name(localFileName)
 				.size(localFile.length()).type(localFileType).uploadTime(new Date()).build();
 		physicalFileRepository.save(physicalFile);
@@ -155,7 +154,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 		Integer physicalFileId = physicalFile.getId();
 		Integer partitionId = uploadBo.getPartitionId();
 		if (Objects.isNull(partitionId)) {
-			log.info("partitionId is null, so this logic file will belong default partition");
+			log.info("partitionId is null, this logic file will belong default partition");
 			List<Partition> defaultPartitions = partitionRepository.queryByIsDefaultAndUserId(true, userId);
 			if (CollectionUtils.isEmpty(defaultPartitions)) {
 				log.warn("no default partition found, create a default partition");
@@ -242,6 +241,20 @@ public class LogicFileServiceImpl implements LogicFileService {
 		log.info("delete local zip file");
 		resultCompressFile.delete();
 		log.info("end of multiple file download, fileName = {}", resultCompressFile.getName());
+	}
+	
+	/**
+	 * 
+	 * @param localFileName
+	 * @return
+	 */
+	private String getFileTypeFromFileName(String localFileName) {
+		if(Objects.isNull(localFileName)) {
+			return null;
+		}
+		String[] localFileNameStrs = localFileName.split(ServiceConstant.STRING_SPLITE_POINT);
+		String localFileType = localFileNameStrs[localFileNameStrs.length - 1];
+		return localFileType;
 	}
 
 	/**

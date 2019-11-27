@@ -11,6 +11,8 @@ import feign.Util;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
 @Slf4j
 @Configuration
 public class ClientErrorConfiguration {
@@ -26,10 +28,9 @@ public class ClientErrorConfiguration {
             Exception exception = null;
             try {
                 String respJson = Util.toString(response.body().asReader());
-                exception = new RuntimeException(respJson);
                 Result<?> result = objectMapper.readValue(respJson, Result.class);
-                if (result.getCode() != 1) {
-                    exception = new RuntimeException("[remote response error] "+result.getMessage());
+                if (!Objects.equals(result.getCode(), 1)) {
+                    exception = new RuntimeException("remote service error, "+result.getMessage());
                 }
             } catch (Exception ex) {
                 log.error("client resolver result error", ex);
@@ -37,5 +38,4 @@ public class ClientErrorConfiguration {
             return exception;
         }
     }
-
 }

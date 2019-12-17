@@ -30,10 +30,13 @@ public class PartitionModelTranslator {
 	 * @param toDate
 	 * @return
 	 */
-	public static PartitionQueryBo toBo(String partitionName, Integer userId, String fromDate, String toDate) {
+	public static PartitionQueryBo toBo(Integer partitionId, String partitionName, Integer userId, String fromDate, String toDate) {
 		PartitionQueryBo queryBo = null;
 		try {
-			queryBo = PartitionQueryBo.builder().partitionName(partitionName).userId(userId)
+			queryBo = PartitionQueryBo.builder()
+                    .partitionId(partitionId)
+                    .partitionName(partitionName)
+                    .userId(userId)
 					.fromDate(Objects.isNull(fromDate) ? null
 							: DateUtils.parseDate(fromDate, ServiceConstant.DATE_FORMAT_SHORT))
 					.toDate(Objects.isNull(toDate) ? null

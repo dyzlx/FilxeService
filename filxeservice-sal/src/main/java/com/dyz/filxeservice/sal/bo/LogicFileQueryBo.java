@@ -16,6 +16,8 @@ import lombok.Data;
 @Data
 public class LogicFileQueryBo {
 
+    private Integer logicFileId;
+
 	private String logicFileName;
 
 	private Boolean ishared;

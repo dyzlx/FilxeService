@@ -12,10 +12,11 @@ import com.dyz.filxeservice.domain.entity.Partition;
 @Repository
 public interface PartitionRepository extends JpaRepository<Partition, Integer>{
 	
-	@Query(value = "select * from fpartition where if(?1 is NULL,1=1,name like %?1%)"
-			+ " and if(?2 is NULL,1=1,user_id=?2)"
-			+ "and create_time between ?3 and ?4", nativeQuery = true)
-	List<Partition> queryPartitions(String partitionName, Integer userId, Date fromDate, Date toDate);
+	@Query(value = "select * from fpartition where if(?1 is NULL,1=1,id=?1)"
+            + " and if(?2 is NULL,1=1,name like %?2%)"
+			+ " and if(?3 is NULL,1=1,user_id=?3)"
+			+ " and create_time between ?4 and ?5", nativeQuery = true)
+	List<Partition> queryPartitions(Integer partitionId, String partitionName, Integer userId, Date fromDate, Date toDate);
 
 	Partition queryById(Integer id);
 	

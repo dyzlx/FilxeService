@@ -27,7 +27,7 @@ public class PartitionRepositoryTest {
 	
 	@Test
 	public void queryTest() {
-		List<Partition> result = partitionRepository.queryPartitions("test", null, null, null);
+		List<Partition> result = partitionRepository.queryPartitions(null, "test", null, null, null);
 		System.out.println(result);
 	}
 }

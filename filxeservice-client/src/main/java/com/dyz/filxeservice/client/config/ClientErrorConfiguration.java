@@ -30,10 +30,11 @@ public class ClientErrorConfiguration {
                 String respJson = Util.toString(response.body().asReader());
                 Result<?> result = objectMapper.readValue(respJson, Result.class);
                 if (!Objects.equals(result.getCode(), 1)) {
-                    exception = new RuntimeException("remote service error, "+result.getMessage());
+                    exception = new RuntimeException(
+                            "an exception occurred during remote service processing, "+result.getMessage());
                 }
             } catch (Exception ex) {
-                log.error("client resolver result error", ex);
+                log.error("client resolver result code fail", ex);
             }
             return exception;
         }

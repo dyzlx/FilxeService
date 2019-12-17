@@ -34,6 +34,7 @@ public class LogicFileController {
 	@RequestMapping(value = "", method = RequestMethod.GET,
 			produces = { "application/json", "application/xml" })
 	public ResponseEntity<Result> queryLogicFile(
+            @RequestParam(required = false) Integer logicFileId,
 			@RequestParam(required = false) String logicFileName,
 			@RequestParam(required = false) String ishared, 
 			@RequestParam(required = false) Integer partitionId,
@@ -41,7 +42,7 @@ public class LogicFileController {
 			@RequestParam(required = false) String fromDate,
 			@RequestParam(required = false) String toDate) {
 		LogicFileQueryBo queryBo = LogicFileModelTranslator.toBo(
-				logicFileName, ishared, partitionId, userId, fromDate,toDate);
+                logicFileId, logicFileName, ishared, partitionId, userId, fromDate,toDate);
 		List<LogicFileInfoVo> result = LogicFileModelTranslator.toVoList(logicfileService.queryLogicFileInfo(queryBo));
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().content(result).build());
 	}

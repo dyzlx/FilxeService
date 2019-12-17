@@ -31,11 +31,12 @@ public class PartitionController {
 	@RequestMapping(value = "", method = RequestMethod.GET,
 			produces = { "application/json", "application/xml" })
 	public ResponseEntity<Result> queryPartition(
+            @RequestParam(required = false) Integer partitionId,
 			@RequestParam(required = false) String partitionName,
 			@RequestParam(required = false) Integer userId,
 			@RequestParam(required = false) String fromDate,
 			@RequestParam(required = false) String toDate) {
-		PartitionQueryBo queryBo = PartitionModelTranslator.toBo(partitionName, userId, fromDate, toDate);
+		PartitionQueryBo queryBo = PartitionModelTranslator.toBo(partitionId, partitionName, userId, fromDate, toDate);
 		List<PartitionInfoVo> resultList = PartitionModelTranslator
 				.toVoList(partitionService.queryPartitionInfo(queryBo));
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().content(resultList).build());

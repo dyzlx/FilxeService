@@ -70,7 +70,7 @@ public class LogicFileServiceImpl implements LogicFileService {
 			log.error("param querybo is null!");
 			throw new IllegalParamException(0, "param can not be null");
 		}
-		List<LogicFile> entityList = logicFileRepository.queryLogicFiles(queryBo.getLogicFileName(),
+		List<LogicFile> entityList = logicFileRepository.queryLogicFiles(queryBo.getLogicFileId(), queryBo.getLogicFileName(),
 				queryBo.getPartitionId(), queryBo.getIshared(), queryBo.getUserId(), queryBo.getFromTime(),
 				queryBo.getToTime());
 		log.info("end of query logicfile. result = {}", entityList);

@@ -46,7 +46,7 @@ public class PartitionServiceImpl implements PartitionService {
 		if (Objects.isNull(queryBo)) {
 			throw new IllegalParamException(0, "param can not be null");
 		}
-		List<Partition> entityList = partitionRepository.queryPartitions(queryBo.getPartitionName(),
+		List<Partition> entityList = partitionRepository.queryPartitions(queryBo.getPartitionId(), queryBo.getPartitionName(),
 				queryBo.getUserId(), queryBo.getFromDate(), queryBo.getToDate());
 		log.info("end of query partition, result = {}", entityList);
 		return PartitionModelTranslator.toBoList(entityList);

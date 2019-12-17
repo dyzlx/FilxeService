@@ -33,11 +33,13 @@ public class LogicFileModelTranslator {
 	 * @param toDate
 	 * @return
 	 */
-	public static LogicFileQueryBo toBo(String logicFileName, String ishared, Integer partitionId, Integer userId,
+	public static LogicFileQueryBo toBo(Integer logicFileId, String logicFileName, String ishared, Integer partitionId, Integer userId,
 			String fromDate, String toDate) {
 		LogicFileQueryBo queryBo = null;
 		try {
-			queryBo = LogicFileQueryBo.builder().logicFileName(logicFileName)
+			queryBo = LogicFileQueryBo.builder()
+                    .logicFileId(logicFileId)
+                    .logicFileName(logicFileName)
 					.ishared(Objects.isNull(ishared) ? null : Boolean.valueOf(ishared)).partitionId(partitionId)
 					.userId(userId)
 					.fromTime(Objects.isNull(fromDate) ? null

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -64,7 +65,7 @@ public class LogicFileController {
 	@RequestMapping(value = "", method = RequestMethod.PUT,
 			produces = { "application/json", "application/xml" },
 			consumes = { "application/json", "application/xml" })
-	public ResponseEntity<Result> updateLogicFileInfo(@RequestBody LogicFileUpdateVo updateVo,
+	public ResponseEntity<Result> updateLogicFileInfo(@Validated @RequestBody LogicFileUpdateVo updateVo,
 			@RequestHeader Integer userId) {
 		logicfileService.updateLogicFileInfo(LogicFileModelTranslator.toBo(updateVo), userId);
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
@@ -92,7 +93,7 @@ public class LogicFileController {
 	
 	@RequestMapping(value = "download", method = RequestMethod.GET)
 	public ResponseEntity<?> downloadAsZip(
-			@RequestBody MultipleFileDownloadVo downloadVo,
+			@Validated @RequestBody MultipleFileDownloadVo downloadVo,
 			@RequestHeader Integer userId,
 			HttpServletResponse response) {
 		logicfileService.downloadAsZip(LogicFileModelTranslator.toBo(downloadVo), userId, response);

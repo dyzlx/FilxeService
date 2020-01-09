@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -45,7 +46,7 @@ public class PartitionController {
 	@RequestMapping(value = "", method = RequestMethod.POST,
 			produces = { "application/json","application/xml" },
 			consumes = { "application/json", "application/xml" })
-	public ResponseEntity<Result> createPartition(@RequestBody PartitionCreateVo createVo,
+	public ResponseEntity<Result> createPartition(@Validated @RequestBody PartitionCreateVo createVo,
 			@RequestHeader Integer userId) {
 		Integer id = partitionService.createPartition(PartitionModelTranslator.toBo(createVo), userId);
 		return ResponseEntity.status(HttpStatus.OK)
@@ -55,7 +56,7 @@ public class PartitionController {
 	@RequestMapping(value = "", method = RequestMethod.PUT,
 			produces = { "application/json","application/xml" },
 			consumes = { "application/json", "application/xml" })
-	public ResponseEntity<Result> updatePartition(@RequestBody PartitionUpdateVo updateVo,
+	public ResponseEntity<Result> updatePartition(@Validated @RequestBody PartitionUpdateVo updateVo,
 			@RequestHeader Integer userId) {
 		partitionService.updatePartition(PartitionModelTranslator.toBo(updateVo), userId);
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());

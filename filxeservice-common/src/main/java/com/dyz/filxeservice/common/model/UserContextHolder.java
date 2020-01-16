@@ -10,7 +10,6 @@ public class UserContextHolder {
     private static final ThreadLocal<UserContext> USER_CONTEXT = new ThreadLocal<>();
 
     public static final UserContext getUserContext() {
-        log.info("get user context");
         UserContext context = USER_CONTEXT.get();
         if (Objects.isNull(context)) {
             context = createEmptyUserContext();
@@ -28,7 +27,6 @@ public class UserContextHolder {
     }
 
     private static final UserContext createEmptyUserContext() {
-        log.info("new user context");
         return new UserContext();
     }
 }

@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 
 import com.dyz.filxeservice.common.model.UserContext;
 import com.dyz.filxeservice.common.model.UserContextHolder;

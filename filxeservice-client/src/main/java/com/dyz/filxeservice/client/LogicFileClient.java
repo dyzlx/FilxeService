@@ -20,37 +20,34 @@ import com.dyz.filxeservice.client.model.Result;
 @FeignClient(value = "filxeservice", configuration = {MultipartSupportConfiguration.class, ClientErrorConfiguration.class, ClientLogConfiguration.class})
 public interface LogicFileClient {
 
-	/**
-	 * delete file by id and user id
-	 * @param logicFileId
-	 * @param userId
-	 */
-	@RequestMapping(value = "/filxeservice/logicfiles/{logicFileId}",
-			method = RequestMethod.DELETE,
-			consumes = {"application/json", "application/xml" })
-	void deleteLogicFile(@PathVariable(name = "logicFileId") Integer logicFileId,
-			@RequestHeader(name = "userId") Integer userId);
+    /**
+     * delete file by id and user id
+     *
+     * @param logicFileId
+     */
+    @RequestMapping(value = "/filxeservice/logicfiles/{logicFileId}",
+            method = RequestMethod.DELETE,
+            consumes = {"application/json", "application/xml"})
+    void deleteLogicFile(@PathVariable(name = "logicFileId") Integer logicFileId);
 
-	/**
-	 * delete files by ids and user id
-	 * @param logicFileIds
-	 * @param userId
-	 */
-	@RequestMapping(value = "/filxeservice/logicfiles",
-			method = RequestMethod.DELETE,
-			consumes = { "application/json","application/xml" })
-	void deleteLogicFiles(@RequestBody List<Integer> logicFileIds,
-			@RequestHeader(name = "userId") Integer userId);
+    /**
+     * delete files by ids and user id
+     *
+     * @param logicFileIds
+     */
+    @RequestMapping(value = "/filxeservice/logicfiles",
+            method = RequestMethod.DELETE,
+            consumes = {"application/json", "application/xml"})
+    void deleteLogicFiles(@RequestBody List<Integer> logicFileIds);
 
-	/**
-	 * upload files
-	 * @param file
-	 * @param userId
-	 * @return
-	 */
-	@RequestMapping(value = "/filxeservice/logicfiles/upload",
-			method = RequestMethod.POST,
-			consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	Result<List<Integer>> uploadFiles(@RequestPart(name = "file") MultipartFile[] file,
-			@RequestHeader(name = "userId") Integer userId);
+    /**
+     * upload files
+     *
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "/filxeservice/logicfiles/upload",
+            method = RequestMethod.POST,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Result<List<Integer>> uploadFiles(@RequestPart(name = "file") MultipartFile[] file);
 }

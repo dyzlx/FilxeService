@@ -16,27 +16,25 @@ public interface PartitionService {
 	 * @param queryBo
 	 * @return
 	 */
-	List<PartitionInfoBo> queryPartitionInfo(@NotNull PartitionQueryBo queryBo);
+	List<PartitionInfoBo> queryPartitionInfo(PartitionQueryBo queryBo);
 	
 	/**
 	 * 
 	 * @param createBo
-	 * @param userId
 	 * @return
 	 */
-	Integer createPartition(@NotNull PartitionCreateBO createBo, @NotNull Integer userId);
-	
+	Integer createPartition(PartitionCreateBO createBo);
+
 	/**
-	 * 
-	 * @param partitionName
-	 * @param description
+	 *
+	 * @param updateBo
 	 */
-	void updatePartition(@NotNull PartitionUpdateBo updateBo, @NotNull Integer userId);
-	
+	void updatePartition(PartitionUpdateBo updateBo);
+
 	/**
-	 * 
-	 * @param partitionName
+	 *
+	 * @param partitionId
 	 */
-	void deletePartition(@NotNull Integer partitionId, @NotNull Integer userId);
+	void deletePartition(Integer partitionId);
 	
 }

@@ -46,9 +46,8 @@ public class PartitionController {
 	@RequestMapping(value = "", method = RequestMethod.POST,
 			produces = { "application/json","application/xml" },
 			consumes = { "application/json", "application/xml" })
-	public ResponseEntity<Result> createPartition(@Validated @RequestBody PartitionCreateVo createVo,
-			@RequestHeader Integer userId) {
-		Integer id = partitionService.createPartition(PartitionModelTranslator.toBo(createVo), userId);
+	public ResponseEntity<Result> createPartition(@Validated @RequestBody PartitionCreateVo createVo) {
+		Integer id = partitionService.createPartition(PartitionModelTranslator.toBo(createVo));
 		return ResponseEntity.status(HttpStatus.OK)
 		        .body(Result.builder().content(id).build());
 	}
@@ -56,16 +55,15 @@ public class PartitionController {
 	@RequestMapping(value = "", method = RequestMethod.PUT,
 			produces = { "application/json","application/xml" },
 			consumes = { "application/json", "application/xml" })
-	public ResponseEntity<Result> updatePartition(@Validated @RequestBody PartitionUpdateVo updateVo,
-			@RequestHeader Integer userId) {
-		partitionService.updatePartition(PartitionModelTranslator.toBo(updateVo), userId);
+	public ResponseEntity<Result> updatePartition(@Validated @RequestBody PartitionUpdateVo updateVo) {
+		partitionService.updatePartition(PartitionModelTranslator.toBo(updateVo));
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
 	}
 	
 	@RequestMapping(value = "{partitionId}", method = RequestMethod.DELETE,
 			produces = { "application/json","application/xml" })
-	public ResponseEntity<Result> deletePartition(@PathVariable Integer partitionId, @RequestHeader Integer userId) {
-		partitionService.deletePartition(partitionId, userId);
+	public ResponseEntity<Result> deletePartition(@PathVariable Integer partitionId) {
+		partitionService.deletePartition(partitionId);
 		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
 	}
 }

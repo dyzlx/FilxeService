@@ -29,74 +29,68 @@ import com.dyz.filxeservice.sal.service.LogicFileService;
 @RequestMapping(value = "logicfiles")
 public class LogicFileController {
 
-	@Autowired
-	private LogicFileService logicfileService;
+    @Autowired
+    private LogicFileService logicfileService;
 
-	@RequestMapping(value = "", method = RequestMethod.GET,
-			produces = { "application/json", "application/xml" })
-	public ResponseEntity<Result> queryLogicFile(
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = {"application/json", "application/xml"})
+    public ResponseEntity<Result> queryLogicFile(
             @RequestParam(required = false) Integer logicFileId,
-			@RequestParam(required = false) String logicFileName,
-			@RequestParam(required = false) String ishared, 
-			@RequestParam(required = false) Integer partitionId,
-			@RequestParam(required = false) Integer userId, 
-			@RequestParam(required = false) String fromDate,
-			@RequestParam(required = false) String toDate) {
-		LogicFileQueryBo queryBo = LogicFileModelTranslator.toBo(
-                logicFileId, logicFileName, ishared, partitionId, userId, fromDate,toDate);
-		List<LogicFileInfoVo> result = LogicFileModelTranslator.toVoList(logicfileService.queryLogicFileInfo(queryBo));
-		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().content(result).build());
-	}
+            @RequestParam(required = false) String logicFileName,
+            @RequestParam(required = false) String ishared,
+            @RequestParam(required = false) Integer partitionId,
+            @RequestParam(required = false) Integer userId,
+            @RequestParam(required = false) String fromDate,
+            @RequestParam(required = false) String toDate) {
+        LogicFileQueryBo queryBo = LogicFileModelTranslator.toBo(
+                logicFileId, logicFileName, ishared, partitionId, userId, fromDate, toDate);
+        List<LogicFileInfoVo> result = LogicFileModelTranslator.toVoList(logicfileService.queryLogicFileInfo(queryBo));
+        return ResponseEntity.status(HttpStatus.OK).body(Result.builder().content(result).build());
+    }
 
-	@RequestMapping(value = "{logicFileId}", method = RequestMethod.DELETE,
-			produces = { "application/json","application/xml" })
-	public ResponseEntity<Result> deleteLogicFile(@PathVariable Integer logicFileId, @RequestHeader Integer userId) {
-		logicfileService.deleteLogicFile(logicFileId, userId);
-		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
-	}
-	
-	@RequestMapping(value = "", method = RequestMethod.DELETE,
-			produces = { "application/json","application/xml" })
-	public ResponseEntity<Result> deleteLogicFiles(@RequestBody List<Integer> logicFileIds, @RequestHeader Integer userId) {
-		logicfileService.deleteLogicFiles(logicFileIds, userId);
-		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
-	}
+    @RequestMapping(value = "{logicFileId}", method = RequestMethod.DELETE,
+            produces = {"application/json", "application/xml"})
+    public ResponseEntity<Result> deleteLogicFile(@PathVariable Integer logicFileId) {
+        logicfileService.deleteLogicFile(logicFileId);
+        return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
+    }
 
-	@RequestMapping(value = "", method = RequestMethod.PUT,
-			produces = { "application/json", "application/xml" },
-			consumes = { "application/json", "application/xml" })
-	public ResponseEntity<Result> updateLogicFileInfo(@Validated @RequestBody LogicFileUpdateVo updateVo,
-			@RequestHeader Integer userId) {
-		logicfileService.updateLogicFileInfo(LogicFileModelTranslator.toBo(updateVo), userId);
-		return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
-	}
+    @RequestMapping(value = "", method = RequestMethod.DELETE,
+            produces = {"application/json", "application/xml"})
+    public ResponseEntity<Result> deleteLogicFiles(@RequestBody List<Integer> logicFileIds) {
+        logicfileService.deleteLogicFiles(logicFileIds);
+        return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
+    }
 
-	@RequestMapping(value = "upload", method = RequestMethod.POST,
-			produces = { "application/json","application/xml" },
-			consumes = { "multipart/form-data" })
-	public ResponseEntity<Result> uploadLogicFile(@RequestParam MultipartFile[] file,
-			@RequestParam(required = false) Integer partitionId, @RequestParam(required = false) boolean ishared,
-			@RequestHeader Integer userId) {
-		List<Integer> ids = logicfileService.uploadFiles(file, LogicFileModelTranslator.toBo(partitionId, ishared), userId);
-		return ResponseEntity.status(HttpStatus.OK)
-		        .body(Result.builder().content(ids).build());
-	}
+    @RequestMapping(value = "", method = RequestMethod.PUT,
+            produces = {"application/json", "application/xml"},
+            consumes = {"application/json", "application/xml"})
+    public ResponseEntity<Result> updateLogicFileInfo(@Validated @RequestBody LogicFileUpdateVo updateVo) {
+        logicfileService.updateLogicFileInfo(LogicFileModelTranslator.toBo(updateVo));
+        return ResponseEntity.status(HttpStatus.OK).body(Result.builder().build());
+    }
 
-	@RequestMapping(value = "download/{logicFileId}", method = RequestMethod.GET)
-	public ResponseEntity<?> downloadLogicFile(
-			@PathVariable Integer logicFileId,
-			@RequestHeader Integer userId,
-			HttpServletResponse response) {
-		logicfileService.downloadFile(logicFileId, userId, response);
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
-	
-	@RequestMapping(value = "download", method = RequestMethod.GET)
-	public ResponseEntity<?> downloadAsZip(
-			@Validated @RequestBody MultipleFileDownloadVo downloadVo,
-			@RequestHeader Integer userId,
-			HttpServletResponse response) {
-		logicfileService.downloadAsZip(LogicFileModelTranslator.toBo(downloadVo), userId, response);
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
+    @RequestMapping(value = "upload", method = RequestMethod.POST,
+            produces = {"application/json", "application/xml"},
+            consumes = {"multipart/form-data"})
+    public ResponseEntity<Result> uploadLogicFile(@RequestParam MultipartFile[] file,
+                                                  @RequestParam(required = false) Integer partitionId,
+                                                  @RequestParam(required = false) boolean ishared) {
+        List<Integer> ids = logicfileService.uploadFiles(file, LogicFileModelTranslator.toBo(partitionId, ishared));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Result.builder().content(ids).build());
+    }
+
+    @RequestMapping(value = "download/{logicFileId}", method = RequestMethod.GET)
+    public ResponseEntity<?> downloadLogicFile(@PathVariable Integer logicFileId, HttpServletResponse response) {
+        logicfileService.downloadFile(logicFileId, response);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @RequestMapping(value = "download", method = RequestMethod.GET)
+    public ResponseEntity<?> downloadAsZip(@Validated @RequestBody MultipleFileDownloadVo downloadVo,
+                                           HttpServletResponse response) {
+        logicfileService.downloadAsZip(LogicFileModelTranslator.toBo(downloadVo), response);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

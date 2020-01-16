@@ -25,16 +25,4 @@ public class LogicFileServiceTest {
 		List<LogicFileInfoBo> result = logicFileService.queryLogicFileInfo(query);
 		System.out.println(result);
 	}
-
-	@Test
-	public void updateLogicFileInfoTest() {
-		LogicFileUpdateBo updateBo = LogicFileUpdateBo.builder().ishared(true).logicFileId(6)
-				.logicFileName("update_test").partitionId(3).build();
-		logicFileService.updateLogicFileInfo(updateBo, 1);
-	}
-	
-	@Test
-	public void deleteLogicFileInfoTest() {
-		logicFileService.deleteLogicFile(6, 1);
-	}
 }

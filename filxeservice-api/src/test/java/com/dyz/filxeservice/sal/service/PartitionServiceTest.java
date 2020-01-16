@@ -26,22 +26,4 @@ public class PartitionServiceTest {
 		List<PartitionInfoBo> result = partitionService.queryPartitionInfo(queryBo);
 		System.out.println(result);
 	}
-
-	@Test
-	public void addPartitionTest() {
-		partitionService.createPartition(
-				PartitionCreateBO.builder().description("Mrs Xin file folder").partitionName("lx_document").build(), 2);
-	}
-
-	@Test
-	public void updatePartitionTest() {
-		PartitionUpdateBo updateBo = PartitionUpdateBo.builder().description("update partition test").partitionId(1)
-				.partitionName("update").build();
-		partitionService.updatePartition(updateBo, 1);
-	}
-
-	@Test
-	public void deletePartitionTest() {
-		partitionService.deletePartition(2, 1);
-	}
 }

@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
+import com.dyz.filxeservice.common.model.UserContext;
+import com.dyz.filxeservice.common.model.UserContextHolder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,84 +35,102 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class PartitionServiceImpl implements PartitionService {
 
-	@Autowired
-	private PartitionRepository partitionRepository;
+    @Autowired
+    private PartitionRepository partitionRepository;
 
-	@Autowired
-	private LogicFileRepository logicFileRepository;
+    @Autowired
+    private LogicFileRepository logicFileRepository;
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public List<PartitionInfoBo> queryPartitionInfo(@NotNull PartitionQueryBo queryBo) {
-		log.info("begin to query partition, queryBo = {}", queryBo);
-		if (Objects.isNull(queryBo)) {
-			throw new IllegalParamException(0, "param can not be null");
-		}
-		List<Partition> entityList = partitionRepository.queryPartitions(queryBo.getPartitionId(), queryBo.getPartitionName(),
-				queryBo.getUserId(), queryBo.getFromDate(), queryBo.getToDate());
-		log.info("end of query partition, result = {}", entityList);
-		return PartitionModelTranslator.toBoList(entityList);
-	}
+    @Override
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+    public List<PartitionInfoBo> queryPartitionInfo(@NotNull PartitionQueryBo queryBo) {
+        log.info("begin to query partition, queryBo = {}", queryBo);
+        if (Objects.isNull(queryBo)) {
+            throw new IllegalParamException(0, "param can not be null");
+        }
+        List<Partition> entityList = partitionRepository.queryPartitions(queryBo.getPartitionId(), queryBo.getPartitionName(),
+                queryBo.getUserId(), queryBo.getFromDate(), queryBo.getToDate());
+        log.info("end of query partition, result = {}", entityList);
+        return PartitionModelTranslator.toBoList(entityList);
+    }
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Integer createPartition(@NotNull PartitionCreateBO createBo, @NotNull Integer userId) {
-		log.info("begin to create partition, partitionBo = {}, userId = {}", createBo, userId);
-		String partitionName = createBo.getPartitionName();
-		if (!ObjectUtils.allNotNull(createBo, partitionName, userId)) {
-			throw new IllegalParamException(0, "param can not be null");
-		}
-		Partition newPartition = Partition.builder().createTime(new Date()).description(createBo.getDescription())
-				.name(partitionName).userId(userId).isDefault(false).build();
-		partitionRepository.save(newPartition);
-		log.info("end of create partition, partition = {}", newPartition);
-		return newPartition.getId();
-	}
+    @Override
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+    public Integer createPartition(PartitionCreateBO createBo) {
+        log.info("begin to create partition, partitionBo = {}, user context = {}", createBo, getUserContext());
+        String partitionName = createBo.getPartitionName();
+        if (!ObjectUtils.allNotNull(createBo, partitionName)) {
+            throw new IllegalParamException(0, "param can not be null");
+        }
+        Partition newPartition = Partition.builder().createTime(new Date()).description(createBo.getDescription())
+                .name(partitionName).userId(getUserId()).isDefault(false).build();
+        partitionRepository.save(newPartition);
+        log.info("end of create partition, partition = {}", newPartition);
+        return newPartition.getId();
+    }
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void updatePartition(@NotNull PartitionUpdateBo updateBo, @NotNull Integer userId) {
-		log.info("begin to update partition info, updateBo = {}, userId = {}", updateBo, userId);
-		if (!ObjectUtils.allNotNull(updateBo, userId)) {
-			throw new IllegalParamException(0, "param can not be null");
-		}
-		Partition partition = partitionRepository.queryByIdAndUserId(updateBo.getPartitionId(), userId);
-		if (Objects.isNull(partition)) {
-			log.warn("no such partition");
-			throw new NoDataException(0, "no such partition");
-		}
-		if (partition.isDefault()) {
-			log.warn("default partition can not be updated");
-			throw new IllegalOperationException(0, "default partition can not be updated");
-		}
-		partition.setName(updateBo.getPartitionName());
-		partition.setDescription(updateBo.getDescription());
-		partitionRepository.save(partition);
-		log.info("end of update partition info, partition = {}", partition);
-	}
+    @Override
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+    public void updatePartition(PartitionUpdateBo updateBo) {
+        log.info("begin to update partition info, updateBo = {}, user context = {}", updateBo, getUserContext());
+        if (Objects.isNull(updateBo)) {
+            throw new IllegalParamException(0, "param can not be null");
+        }
+        Partition partition = partitionRepository.queryByIdAndUserId(updateBo.getPartitionId(), getUserId());
+        if (Objects.isNull(partition)) {
+            log.warn("no such partition");
+            throw new NoDataException(0, "no such partition");
+        }
+        if (partition.isDefault()) {
+            log.warn("default partition can not be updated");
+            throw new IllegalOperationException(0, "default partition can not be updated");
+        }
+        partition.setName(updateBo.getPartitionName());
+        partition.setDescription(updateBo.getDescription());
+        partitionRepository.save(partition);
+        log.info("end of update partition info, partition = {}", partition);
+    }
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void deletePartition(@NotNull Integer partitionId, @NotNull Integer userId) {
-		log.info("begin to delete partiton, partitionId = {}, userId = {}", partitionId, userId);
-		if (!ObjectUtils.allNotNull(partitionId, userId)) {
-			throw new IllegalParamException(0, "param can not be null");
-		}
-		Partition partition = partitionRepository.queryByIdAndUserId(partitionId, userId);
-		if (Objects.isNull(partition)) {
-			log.warn("no such partition");
-			throw new NoDataException(0, "no such partition");
-		}
-		if (partition.isDefault()) {
-			log.warn("default partition can not be deleted");
-			throw new IllegalOperationException(0, "default partition can not be deleted");
-		}
-		List<LogicFile> logicFilesInPartition = logicFileRepository.queryByPartitionId(partition.getId());
-		if (!CollectionUtils.isEmpty(logicFilesInPartition)) {
-			log.warn("can not delete partition which contains file");
-			throw new IllegalOperationException(0, "can not delete partition which contains file");
-		}
-		partitionRepository.delete(partition);
-		log.info("end of delete parition, deleted partition = {}", partition);
-	}
+    @Override
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
+    public void deletePartition(Integer partitionId) {
+        log.info("begin to delete partiton, partitionId = {}, user context = {}", partitionId, getUserContext());
+        if (Objects.isNull(partitionId)) {
+            throw new IllegalParamException(0, "param can not be null");
+        }
+        Partition partition = partitionRepository.queryByIdAndUserId(partitionId, getUserId());
+        if (Objects.isNull(partition)) {
+            log.warn("no such partition");
+            throw new NoDataException(0, "no such partition");
+        }
+        if (partition.isDefault()) {
+            log.warn("default partition can not be deleted");
+            throw new IllegalOperationException(0, "default partition can not be deleted");
+        }
+        List<LogicFile> logicFilesInPartition = logicFileRepository.queryByPartitionId(partition.getId());
+        if (!CollectionUtils.isEmpty(logicFilesInPartition)) {
+            log.warn("can not delete partition which contains file");
+            throw new IllegalOperationException(0, "can not delete partition which contains file");
+        }
+        partitionRepository.delete(partition);
+        log.info("end of delete parition, deleted partition = {}", partition);
+    }
+
+    /**
+     * get user id from user context
+     *
+     * @return
+     */
+    public Integer getUserId() {
+        return getUserContext().getUserId();
+    }
+
+    /**
+     * get user context from user context holder
+     *
+     * @return
+     */
+    public UserContext getUserContext() {
+        return UserContextHolder.getUserContext();
+    }
 }

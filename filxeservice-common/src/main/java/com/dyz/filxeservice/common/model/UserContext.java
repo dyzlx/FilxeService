@@ -14,13 +14,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(exclude = {"userRoles", "authToken"})
 public class UserContext {
-    
-    public final static String USER_ID= "ms-user-id";
-    
+
+    public final static String USER_ID = "ms-user-id";
+
     public final static String USER_ROLES = "ms-user-roles";
-    
+
     public final static String CORRELATION_ID = "ms-correlation-id";
-    
+
     public final static String AUTH_TOKEN = "ms-auth-token";
 
     private Integer userId;

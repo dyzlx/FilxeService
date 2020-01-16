@@ -156,7 +156,7 @@ public class LogicFileServiceImpl implements LogicFileService {
                 .size(localFile.length()).type(localFileType).uploadTime(new Date()).build();
         physicalFileRepository.save(physicalFile);
         log.info("physical file info has saved, physicalFile = {}", physicalFile);
-        Integer physicalFileId = physicalFile.getId();
+        int physicalFileId = physicalFile.getId();
         Integer partitionId = uploadBo.getPartitionId();
         if (Objects.isNull(partitionId)) {
             log.info("partitionId is null, this logic file will belong default partition");
@@ -221,7 +221,7 @@ public class LogicFileServiceImpl implements LogicFileService {
             resultZipFileName = UUID.randomUUID().toString();
         }
         List<File> uncompressionFiles = new ArrayList<>();
-        downloadBo.getLogicFileIds().stream().forEach(x -> {
+        downloadBo.getLogicFileIds().forEach(x -> {
             LogicFile logicFile = logicFileRepository.queryById(x);
             if (Objects.isNull(logicFile)) {
                 log.error("no such logic file, id = {}", x);

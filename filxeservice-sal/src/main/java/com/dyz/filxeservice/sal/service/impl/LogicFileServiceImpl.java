@@ -68,7 +68,7 @@ public class LogicFileServiceImpl implements LogicFileService {
     @Override
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
     public List<LogicFileInfoBo> queryLogicFileInfo(LogicFileQueryBo queryBo) {
-        log.info("begin to query logicfile. queryBo = {}", queryBo);
+        log.info("begin to query logicfile. queryBo = {}, user context = {}", queryBo, getUserContext());
         if (Objects.isNull(queryBo)) {
             log.error("param querybo is null!");
             throw new IllegalParamException(0, "param can not be null");

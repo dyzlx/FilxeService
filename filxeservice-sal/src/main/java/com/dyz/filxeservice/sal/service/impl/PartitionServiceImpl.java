@@ -44,7 +44,7 @@ public class PartitionServiceImpl implements PartitionService {
     @Override
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
     public List<PartitionInfoBo> queryPartitionInfo(@NotNull PartitionQueryBo queryBo) {
-        log.info("begin to query partition, queryBo = {}", queryBo);
+        log.info("begin to query partition, queryBo = {}, user context = {}", queryBo, getUserContext());
         if (Objects.isNull(queryBo)) {
             throw new IllegalParamException(0, "param can not be null");
         }

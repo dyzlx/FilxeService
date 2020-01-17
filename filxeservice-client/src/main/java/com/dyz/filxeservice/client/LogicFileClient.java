@@ -3,6 +3,7 @@ package com.dyz.filxeservice.client;
 import java.util.List;
 
 import com.dyz.filxeservice.client.config.ClientLogConfiguration;
+import com.dyz.filxeservice.client.config.FeginClientConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,7 @@ import com.dyz.filxeservice.client.config.ClientErrorConfiguration;
 import com.dyz.filxeservice.client.config.MultipartSupportConfiguration;
 import com.dyz.filxeservice.client.model.Result;
 
-@FeignClient(value = "filxeservice", configuration = {MultipartSupportConfiguration.class, ClientErrorConfiguration.class, ClientLogConfiguration.class})
+@FeignClient(value = "filxeservice", configuration = {FeginClientConfiguration.class})
 public interface LogicFileClient {
 
     /**

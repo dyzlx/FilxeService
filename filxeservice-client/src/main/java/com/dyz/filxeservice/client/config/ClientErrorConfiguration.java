@@ -26,6 +26,7 @@ public class ClientErrorConfiguration {
         public Exception decode(String methodKey, Response response) {
         		ObjectMapper objectMapper = new ObjectMapper();
             Exception exception = null;
+
             try {
                 String respJson = Util.toString(response.body().asReader());
                 Result<?> result = objectMapper.readValue(respJson, Result.class);

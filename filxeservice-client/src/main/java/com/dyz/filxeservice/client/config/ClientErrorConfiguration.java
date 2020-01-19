@@ -1,5 +1,6 @@
 package com.dyz.filxeservice.client.config;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,7 +27,13 @@ public class ClientErrorConfiguration {
         public Exception decode(String methodKey, Response response) {
         		ObjectMapper objectMapper = new ObjectMapper();
             Exception exception = null;
-
+            String responseCode = String.valueOf(response.status());
+            if(!responseCode.startsWith("2")) {
+                log.error("remote response error, response code = {}", responseCode);
+                exception = new RuntimeException(
+                        "an exception occurred during remote service processing");
+                return exception;
+            }
             try {
                 String respJson = Util.toString(response.body().asReader());
                 Result<?> result = objectMapper.readValue(respJson, Result.class);

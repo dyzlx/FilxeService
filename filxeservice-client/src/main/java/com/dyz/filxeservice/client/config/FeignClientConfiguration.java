@@ -21,15 +21,6 @@ import java.util.Objects;
 @Import({ClientErrorConfiguration.class, ClientLogConfiguration.class, MultipartSupportConfiguration.class})
 public class FeignClientConfiguration implements RequestInterceptor {
 
-    public final static List<String> userContextHeaderNames = new ArrayList() {
-        {
-            add("ms-user-id");
-            add("ms-user-roles");
-            add("ms-correlation-id");
-            add("ms-auth-token");
-        }
-    };
-
     @Override
     public void apply(RequestTemplate template) {
         log.info("passing user context http header parameters");
@@ -40,7 +31,7 @@ public class FeignClientConfiguration implements RequestInterceptor {
             while (headerNames.hasMoreElements()) {
                 String name = headerNames.nextElement();
                 String values = request.getHeader(name);
-                if (userContextHeaderNames.contains(name)) {
+                if (Objects.nonNull(name) && name.startsWith("ms-")) {
                     template.header(name, values);
                 }
             }

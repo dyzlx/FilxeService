@@ -6,8 +6,6 @@ import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
-import com.dyz.filxeservice.common.model.UserContext;
-import com.dyz.filxeservice.common.model.UserContextHolder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,9 @@ import com.dyz.filxeservice.sal.service.PartitionService;
 import com.dyz.filxeservice.sal.translation.PartitionModelTranslator;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static com.dyz.filxeservice.common.model.UserContextHolder.getUserId;
+import static com.dyz.filxeservice.common.model.UserContextHolder.getUserContext;
 
 @Slf4j
 @Service
@@ -114,23 +115,5 @@ public class PartitionServiceImpl implements PartitionService {
         }
         partitionRepository.delete(partition);
         log.info("end of delete parition, deleted partition = {}", partition);
-    }
-
-    /**
-     * get user id from user context
-     *
-     * @return
-     */
-    public Integer getUserId() {
-        return getUserContext().getUserId();
-    }
-
-    /**
-     * get user context from user context holder
-     *
-     * @return
-     */
-    public UserContext getUserContext() {
-        return UserContextHolder.getUserContext();
     }
 }

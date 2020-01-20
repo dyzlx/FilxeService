@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.dyz.filxeservice.common.model.UserContext;
-import com.dyz.filxeservice.common.model.UserContextHolder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +42,9 @@ import com.dyz.filxeservice.sal.service.LogicFileService;
 import com.dyz.filxeservice.sal.translation.LogicFileModelTranslator;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static com.dyz.filxeservice.common.model.UserContextHolder.getUserId;
+import static com.dyz.filxeservice.common.model.UserContextHolder.getUserContext;
 
 @Slf4j
 @Service
@@ -357,23 +358,4 @@ public class LogicFileServiceImpl implements LogicFileService {
         }
         log.info("set download file to http response finish");
     }
-
-    /**
-     * get user id from user context
-     *
-     * @return
-     */
-    public Integer getUserId() {
-        return getUserContext().getUserId();
-    }
-
-    /**
-     * get user context from user context holder
-     *
-     * @return
-     */
-    public UserContext getUserContext() {
-        return UserContextHolder.getUserContext();
-    }
-
 }

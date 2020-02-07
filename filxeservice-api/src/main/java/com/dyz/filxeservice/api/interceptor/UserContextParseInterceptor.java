@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@WebFilter(filterName = "userContextParseFilter", urlPatterns = {"/filxeservice/*"})
+@WebFilter(filterName = "userContextParseFilter", urlPatterns = {"/*"})
 @Component
 public class UserContextParseInterceptor implements Filter {
 

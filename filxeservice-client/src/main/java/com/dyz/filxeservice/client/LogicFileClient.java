@@ -22,7 +22,7 @@ public interface LogicFileClient {
      *
      * @param logicFileId
      */
-    @RequestMapping(value = "/filxeservice/logicfiles/{logicFileId}",
+    @RequestMapping(value = "/logicfiles/{logicFileId}",
             method = RequestMethod.DELETE,
             consumes = {"application/json", "application/xml"})
     void deleteLogicFile(@PathVariable(name = "logicFileId") Integer logicFileId);
@@ -32,7 +32,7 @@ public interface LogicFileClient {
      *
      * @param logicFileIds
      */
-    @RequestMapping(value = "/filxeservice/logicfiles",
+    @RequestMapping(value = "/logicfiles",
             method = RequestMethod.DELETE,
             consumes = {"application/json", "application/xml"})
     void deleteLogicFiles(@RequestBody List<Integer> logicFileIds);
@@ -43,7 +43,7 @@ public interface LogicFileClient {
      * @param file
      * @return
      */
-    @RequestMapping(value = "/filxeservice/logicfiles/upload",
+    @RequestMapping(value = "/logicfiles/upload",
             method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Result<List<Integer>> uploadFiles(@RequestPart(name = "file") MultipartFile[] file);

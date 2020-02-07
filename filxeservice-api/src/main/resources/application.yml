@@ -1,7 +1,7 @@
 server:
   port: 8881
   servlet:
-    context-path: /filxeservice
+    context-path: /
 spring:
   application:
     name: filxeservice

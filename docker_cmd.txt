@@ -1,13 +1,11 @@
 ============[image build]===========
-docker build -t filxeservice_image .
+docker build --rm -t filxeservice_image .
 ============[image run]===========
 docker run -d --name="filxeservice"\
  -v /tmp/store/:/Volumes/DYZ-document/Program/X-CodeRunSpace/store/\
- -v /tmp/store/:/tmp/\
  -p 18881:8881\
  -e DMS_DB_HOST=192.168.199.139\
  -e DMS_DB_USERNAME=root\
  -e DMS_DB_PASSWORD=658080\
- -e DMS_FILXE_STORE=/tmp/\
- -e DMS_DISCOVER_HOST=192.168.199.134\
+ -e DMS_DISCOVER_HOST=172.17.0.2\
  filxeservice_image

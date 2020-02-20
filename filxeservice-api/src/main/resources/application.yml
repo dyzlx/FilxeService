@@ -27,7 +27,7 @@ filxeservice:
     store:
       # /Volumes/DYZ-document/Program/X-CodeRunSpace/store/
       # C:\var\dyz\store
-      path: ${DMS_FILXE_STORE:/Volumes/DYZ-document/Program/X-CodeRunSpace/store/}
+      path: /Volumes/DYZ-document/Program/X-CodeRunSpace/store/
       temp-path: /Volumes/DYZ-document/Program/X-CodeRunSpace/temp/
 logging:
   config: classpath:log4j2.xml

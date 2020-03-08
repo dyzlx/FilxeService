@@ -30,7 +30,7 @@ filxeservice:
       path: /Volumes/DYZ-document/Program/X-CodeRunSpace/store/
       temp-path: /Volumes/DYZ-document/Program/X-CodeRunSpace/temp/
 logging:
-  config: classpath:log4j2.xml
+  file: /Volumes/DYZ-document/Program/X-CodeRunSpace/log/filxeservice/filxe-service.log
 
 eureka:
   instance:

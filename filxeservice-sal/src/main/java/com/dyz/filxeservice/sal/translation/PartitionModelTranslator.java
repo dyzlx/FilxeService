@@ -22,14 +22,11 @@ public class PartitionModelTranslator {
 	}
 
 	public static List<PartitionInfoBo> toBoList(List<Partition> entitys) {
-		if (CollectionUtils.isEmpty(entitys)) {
-			return Collections.emptyList();
+		if (Objects.isNull(entitys)) {
+			return null;
 		}
 		List<PartitionInfoBo> result = new ArrayList<>();
-		entitys.stream().forEach(x -> {
-			result.add(toBo(x));
-		});
+		entitys.forEach(x -> result.add(toBo(x)));
 		return result;
 	}
-
 }

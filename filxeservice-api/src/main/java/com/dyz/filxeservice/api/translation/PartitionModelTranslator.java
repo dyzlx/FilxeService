@@ -93,15 +93,12 @@ public class PartitionModelTranslator {
 	 * @param boList
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<PartitionInfoVo> toVoList(List<PartitionInfoBo> boList) {
-		if (CollectionUtils.isEmpty(boList)) {
-			return Collections.EMPTY_LIST;
+		if (Objects.isNull(boList)) {
+			return null;
 		}
 		List<PartitionInfoVo> result = new ArrayList<>();
-		boList.stream().forEach(x -> {
-			result.add(toVo(x));
-		});
+		boList.forEach(x -> result.add(toVo(x)));
 		return result;
 	}
 }

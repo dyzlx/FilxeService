@@ -107,6 +107,7 @@ public class LogicFileServiceImpl implements LogicFileService {
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
     public void deleteLogicFiles(List<Integer> logicFileIds) {
         log.info("begin to multiple logicFiles delete, ids = {}, user context = {}", logicFileIds, getUserContext());
         if (Objects.isNull(logicFileIds)) {

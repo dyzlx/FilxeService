@@ -23,13 +23,11 @@ public class LogicFileModelTranslator {
 	}
 
 	public static List<LogicFileInfoBo> toBoList(List<LogicFile> entitys) {
-		if (CollectionUtils.isEmpty(entitys)) {
-			return Collections.emptyList();
+		if (Objects.isNull(entitys)) {
+			return null;
 		}
 		List<LogicFileInfoBo> result = new ArrayList<>();
-		entitys.stream().forEach(x -> {
-			result.add(toBo(x));
-		});
+		entitys.forEach(x -> result.add(toBo(x)));
 		return result;
 	}
 

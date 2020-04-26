@@ -1,31 +1,21 @@
 package com.dyz.filxeservice.api.interceptor;
 
+import com.dyz.filxeservice.common.execption.IllegalParamException;
+import com.dyz.filxeservice.common.model.UserContext;
+import com.dyz.filxeservice.common.model.UserContextHolder;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.ObjectUtils;
-
-import com.dyz.filxeservice.common.execption.IllegalParamException;
-import com.dyz.filxeservice.common.model.UserContext;
-import com.dyz.filxeservice.common.model.UserContextHolder;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
 @Slf4j
-@WebFilter(filterName = "userContextParseFilter", urlPatterns = {"/*"})
-@Component
+@WebFilter(filterName = "userContextParseFilter", urlPatterns = {"/logicfiles/*", "/partitions/*"})
 public class UserContextParseInterceptor implements Filter {
 
     @Override
@@ -40,12 +30,12 @@ public class UserContextParseInterceptor implements Filter {
         String authToken = httpServletRequest.getHeader(UserContext.AUTH_TOKEN);
         // userId and correlationId is required
         if (!ObjectUtils.allNotNull(userIdStr, correlationId)) {
-            log.error("required header param is null");
+            log.error("required headers userId and correlationId param is null");
             throw new IllegalParamException(0, "required header param is null");
         }
         List<String> roles = null;
         if(Objects.nonNull(rolesStr)) {
-            roles = new ArrayList<>(Arrays.asList(rolesStr.split(",")));
+            roles = Arrays.asList(rolesStr.split(","));
         }
         Integer userId = Integer.parseInt(userIdStr);
         currentUserContext.setUserId(userId);

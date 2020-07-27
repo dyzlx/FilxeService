@@ -16,7 +16,7 @@ management:
         include: '*'
 spring:
   profiles:
-    include: discover-eureka
+    include: discover-consul
   application:
     name: filxeservice
   servlet:
@@ -39,11 +39,11 @@ spring:
 filxeservice:
   file:
     store:
-      # /Volumes/DYZ-document/Program/X-CodeRunSpace/store/
+      # /Volumes/DYZ-document/JavaProgram/X-CodeRunSpace/store/
       # C:\var\dyz\store
-      path: /Volumes/DYZ-document/Program/X-CodeRunSpace/store/
-      temp-path: /Volumes/DYZ-document/Program/X-CodeRunSpace/temp/
+      path: /Volumes/DYZ-document/JavaProgram/X-CodeRunSpace/store/
+      temp-path: /Volumes/DYZ-document/JavaProgram/X-CodeRunSpace/temp/
 logging:
-  file: /Volumes/DYZ-document/Program/X-CodeRunSpace/log/filxeservice/filxe-service.log
+  file: /Volumes/DYZ-document/JavaProgram/X-CodeRunSpace/log/filxeservice/filxe-service.log
   level:
     com.netflix.discovery: error

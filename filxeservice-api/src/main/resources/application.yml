@@ -23,6 +23,10 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DMS_DB_HOST:127.0.0.1}:3306/filxesdb?charset=utf8mb4&useSSL=false

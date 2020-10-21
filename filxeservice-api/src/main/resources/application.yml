@@ -15,10 +15,6 @@ management:
       exposure:
         include: '*'
 spring:
-  profiles:
-    include: discover-consul
-  application:
-    name: filxeservice
   servlet:
     multipart:
       max-file-size: 500MB
@@ -27,6 +23,15 @@ spring:
     loadbalancer:
       ribbon:
         enabled: true
+    consul:
+      host: ${DMS_DISCOVER_HOST:127.0.0.1}
+      port: 8500
+      discovery:
+        instance-id: ${spring.application.name}-${server.port}
+        prefer-ip-address: true
+        enabled: true
+        register: true
+        deregister: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DMS_DB_HOST:127.0.0.1}:3306/filxesdb?charset=utf8mb4&useSSL=false
@@ -48,6 +53,5 @@ filxeservice:
       path: /Volumes/DYZ-document/JavaProgram/X-CodeRunSpace/store/
       temp-path: /Volumes/DYZ-document/JavaProgram/X-CodeRunSpace/temp/
 logging:
-  file: /Volumes/DYZ-document/JavaProgram/X-CodeRunSpace/log/filxeservice/filxe-service.log
   level:
     com.netflix.discovery: error

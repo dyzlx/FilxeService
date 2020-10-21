@@ -1,17 +1,14 @@
 package com.dyz.filxeservice.sal.service;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.web.multipart.MultipartFile;
-
 import com.dyz.filxeservice.sal.bo.LogicFileInfoBo;
 import com.dyz.filxeservice.sal.bo.LogicFileQueryBo;
 import com.dyz.filxeservice.sal.bo.LogicFileUpdateBo;
 import com.dyz.filxeservice.sal.bo.LogicFileUploadBo;
 import com.dyz.filxeservice.sal.bo.MultipleFileDowloadBo;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface LogicFileService {
 

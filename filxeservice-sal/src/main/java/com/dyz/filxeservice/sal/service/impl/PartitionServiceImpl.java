@@ -1,18 +1,5 @@
 package com.dyz.filxeservice.sal.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.dyz.filxeservice.common.execption.IllegalOperationException;
 import com.dyz.filxeservice.common.execption.IllegalParamException;
 import com.dyz.filxeservice.common.execption.NoDataException;
@@ -26,11 +13,20 @@ import com.dyz.filxeservice.sal.bo.PartitionQueryBo;
 import com.dyz.filxeservice.sal.bo.PartitionUpdateBo;
 import com.dyz.filxeservice.sal.service.PartitionService;
 import com.dyz.filxeservice.sal.translation.PartitionModelTranslator;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import static com.dyz.filxeservice.common.model.UserContextHolder.getUserId;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
 import static com.dyz.filxeservice.common.model.UserContextHolder.getUserContext;
+import static com.dyz.filxeservice.common.model.UserContextHolder.getUserId;
 
 @Slf4j
 @Service
@@ -44,7 +40,7 @@ public class PartitionServiceImpl implements PartitionService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED)
-    public List<PartitionInfoBo> queryPartitionInfo(@NotNull PartitionQueryBo queryBo) {
+    public List<PartitionInfoBo> queryPartitionInfo(PartitionQueryBo queryBo) {
         log.info("begin to query partition, queryBo = {}, user context = {}", queryBo, getUserContext());
         if (Objects.isNull(queryBo)) {
             throw new IllegalParamException(0, "param can not be null");

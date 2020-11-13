@@ -15,4 +15,8 @@ public class ServiceConstant {
 	public static final String HTTP_HEADER_CONTENT_DISPOSITION = "Content-Disposition";
 	        
 	public static final String CONTENT_DISPOSITION_VALUE = "attachment;filename=";
+
+	public static final String BOOLEAN_TRUE = "Y";
+
+	public static final String BOOLEAN_FALSE = "N";
 }

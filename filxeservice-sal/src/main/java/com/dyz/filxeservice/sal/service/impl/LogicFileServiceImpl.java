@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.dyz.filxeservice.common.util.BooleanHandler;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -75,10 +76,7 @@ public class LogicFileServiceImpl implements LogicFileService {
         }
         List<LogicFile> entityList = logicFileRepository
                 .queryLogicFiles(queryBo.getLogicFileId(), queryBo.getLogicFileName(), queryBo.getPartitionId(), queryBo.getUserId(),
-                        queryBo.getFromTime(), queryBo.getToTime())
-                .stream()
-                .filter(x -> (Objects.isNull(queryBo.getIshared()) || Objects.equals(queryBo.getIshared(), x.isShared())))
-                .collect(Collectors.toList());
+                        queryBo.getFromTime(), queryBo.getToTime(), BooleanHandler.convertToString(queryBo.getIshared()));
         log.info("end of query logicfile. result = {}", entityList);
         return LogicFileModelTranslator.toBoList(entityList);
     }
